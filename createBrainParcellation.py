@@ -5,7 +5,7 @@ import subprocess
 import SimpleITK as sitk
 import numpy as np
 
-from nipype.interfaces.ants import N4BiasFieldCorrection
+# from nipype.interfaces.ants import N4BiasFieldCorrection
 from natsort import natsorted
 
 
@@ -13,13 +13,32 @@ def ReadImage(file_path):
     ''' This code returns the numpy nd array for a MR image at path'''
     return sitk.GetArrayFromImage(sitk.ReadImage(file_path)).astype(np.float32)
 
+# def N4ITK(filepath, output_name):
+#     print('N4ITK working on: %s' %filepath)
+#     n4 = N4BiasFieldCorrection()
+#     n4.inputs.dimension = 3
+#     n4.inputs.input_image = filepath
+#     n4.inputs.output_image = output_name
+#     n4.run()
+
 def N4ITK(filepath, output_name):
-    print('N4ITK working on: %s' %filepath) 
-    n4 = N4BiasFieldCorrection()
-    n4.inputs.dimension = 3
-    n4.inputs.input_image = filepath
-    n4.inputs.output_image = output_name
-    n4.run()
+	number_fitting_levels = 4
+	input_image = sitk.ReadImage(filepath)
+	input_image_float = sitk.Cast(input_image, sitk.sitkFloat32)
+	# Mask the image with a binary mask
+	mask_image = sitk.OtsuThreshold(input_image_float, 0, 1, 200)
+	# sitk.WriteImage(mask_image, 'G:/BraTS2020/imagesTrainingD/BraTS20_Training_360_0001_mask.nii.gz')
+	# Correct the bias field
+	corrector = sitk.N4BiasFieldCorrectionImageFilter()
+	corrector.SetMaximumNumberOfIterations([2] * number_fitting_levels)
+
+	# Update the image with the corrected image
+	output_image = corrector.Execute(input_image_float, mask_image)
+
+	# If you wish to convert back to the original type (might lose precision)
+	output_image = sitk.Cast(output_image, input_image.GetPixelID())
+
+	sitk.WriteImage(output_image, output_name)
 
 def RegisterBrain(t1_path, ref_path, subject2mni_mat, mni2subject_mat):
     print('Working on registration!')
@@ -63,20 +82,22 @@ output_dir = args.output
 root_dir = os.path.split(filepath)[0]
 file_name = os.path.split(filepath)[1]
 temp_dir = os.path.join(root_dir, '.temp_bp')
+
+print(root_dir, file_name, temp_dir)
 if not os.path.exists(temp_dir):
 	os.mkdir(temp_dir)
 
 # Apply N4ITK bias correction on MR t1 images
-N4ITK_name = file_name[:file_name.find(".nii.gz")]+'_temp.nii.gz'
+N4ITK_name = file_name[:file_name.find(".nii")]+'_temp.nii'
 N4ITK_path = os.path.join(temp_dir, N4ITK_name)
-#N4ITK(filepath, N4ITK_path)
-
+N4ITK(filepath, N4ITK_path)
+print('N4ITK', N4ITK_name, N4ITK_path)
 
 # Registration
-mni152_1mm_path = './MNI152_T1_1mm_brain.nii.gz'
-subject2mni_path = os.path.join(temp_dir, file_name[:file_name.index('.nii.gz')]+'_invol2refvol.mat')
-mni2subject_path = os.path.join(temp_dir, file_name[:file_name.index('.nii.gz')]+'_refvol2invol.mat')
-#RegisterBrain(N4ITK_path, mni152_1mm_path, subject2mni_path, mni2subject_path)
+mni152_1mm_path = './BrainParcellation/template/MNI152_T1_1mm_brain.nii.gz'
+subject2mni_path = os.path.join(temp_dir, file_name[:file_name.index('.nii')]+'_invol2refvol.mat')
+mni2subject_path = os.path.join(temp_dir, file_name[:file_name.index('.nii')]+'_refvol2invol.mat')
+RegisterBrain(N4ITK_path, mni152_1mm_path, subject2mni_path, mni2subject_path)
 
 
 # Mapping individual brain parcellation to subject
@@ -84,12 +105,15 @@ brain_parcellation_path = './atlases/HarvardOxford'
 bp_filepaths = [os.path.join(root, name) for root, dirs, files in os.walk(brain_parcellation_path) for name in files if name.endswith('.nii.gz')]
 bp_filepaths = natsorted(bp_filepaths, key=lambda y: y.lower())
 refVol_path = filepath
-#RegisterLabels2Subject(refVol_path, bp_filepaths, mni2subject_path, temp_dir)
+RegisterLabels2Subject(refVol_path, bp_filepaths, mni2subject_path, temp_dir)
+
+print(bp_filepaths)
 
 # Merge individual labels to the brain parcellation in subject space using argmax
 subject_bp_filepaths = [os.path.join(root, name) for root, dirs, files in os.walk(temp_dir) for name in files if 'HarvardOxford' not in name and 'lab' in name and name.endswith('.nii.gz')]
 subject_bp_filepaths = natsorted(subject_bp_filepaths, key=lambda y: y.lower())
 subject_name = os.path.join(output_dir, args.name+'_HarvardOxford-sub.nii.gz')
+print(subject_bp_filepaths)
 SubjectLabels2ParcellationArgmax(subject_bp_filepaths, subject_name)
 
 Remove(subject_bp_filepaths)

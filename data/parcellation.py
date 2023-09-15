@@ -2,6 +2,18 @@ import nibabel as nib
 import os
 import numpy as np
 
+def check_system():
+    if os.name == 'nt':
+        return 'Windows'
+    elif os.name == 'posix':
+        if 'linux' in os.uname().sysname.lower():
+            return 'Linux'
+        else:
+            return os.uname().sysname
+    else:
+        return 'Unknown'
+
+
 def nib_load(file_name):
     proxy = nib.load(file_name)
     data = proxy.get_data()
@@ -10,20 +22,20 @@ def nib_load(file_name):
     proxy.uncache()
     return data
 
-#suffix = 'HarvardOxford-sub'
-suffix = 'VOI-1mm'
+
+suffix = 'HarvardOxford-sub'
+# suffix = 'VOI-1mm'
 
 # training
-#mask_dir = '/usr/data/pkao/brats2018/BrainParcellation/HarvardOxford-sub/training'
-#mask_dir = '/usr/data/pkao/brats2018/BrainParcellation/VOI-1mm/train'
-#root = '/media/hdd1/pkao/brats2018/training'
-#flist = 'all.txt'
+mask_dir = './BrainParcellation/HarvardOxford-sub/training'
+root = 'C:/Data/MICCAI_BraTS_2018_Data_Training'
+flist = 'all.txt'
 
 # validation
 #mask_dir = '/usr/data/pkao/brats2018/BrainParcellation/HarvardOxford-sub/validation/'
-mask_dir = '/usr/data/pkao/brats2018/BrainParcellation/VOI-1mm/valid'
-root = '/media/hdd1/pkao/brats2018/validation'
-flist = 'test.txt'
+# mask_dir = '/usr/data/pkao/brats2018/BrainParcellation/VOI-1mm/valid'
+# root = '/media/hdd1/pkao/brats2018/validation'
+# flist = 'test.txt'
 
 # testing
 #mask_dir = '/usr/data/pkao/brats2018/BrainParcellation/HarvardOxford-sub/testing/'
@@ -31,7 +43,12 @@ flist = 'test.txt'
 #flist = 'test.txt'
 
 flist = open(os.path.join(root, flist)).read().splitlines()
-names = [x.split('/')[-1] for x in flist]
+if check_system() == 'Windows':
+    names = [x.split('\\')[-1] for x in flist]
+else:
+    names = [x.split('/')[-1] for x in flist]
+
+print(names)
 
 for k, name in enumerate(names):
     oname = os.path.join(root, flist[k], name + '_' + suffix + '.npy')
