@@ -1,0 +1,17 @@
+rename_brain_parcellation.py
+done
+tmp
+build
+*.egg-info
+*.so
+*.png
+*.sh
+output
+submissions
+ckpts
+logs
+backup
+__pycache__
+experiments/deepmedic*
+experiments/unet*
+experiments/munet*
