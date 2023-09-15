@@ -128,7 +128,7 @@ def doit(dset):
     root, has_label = dset['root'], dset['has_label']
     file_list = os.path.join(root, dset['flist'])
     subjects = open(file_list).read().splitlines()
-    names = [sub.split('\\')[-1] for sub in subjects]
+    names = [sub.split('/')[-1] for sub in subjects]
     paths = [os.path.join(root, sub, name + '_') for sub, name in zip(subjects, names)]
     for path in paths:
         process(path, has_label)

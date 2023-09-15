@@ -1,17 +1,7 @@
 import nibabel as nib
 import os
 import numpy as np
-
-def check_system():
-    if os.name == 'nt':
-        return 'Windows'
-    elif os.name == 'posix':
-        if 'linux' in os.uname().sysname.lower():
-            return 'Linux'
-        else:
-            return os.uname().sysname
-    else:
-        return 'Unknown'
+from utils.utils import check_system
 
 
 def nib_load(file_name):

@@ -10,7 +10,7 @@ from .transforms import Rot90, Flip, Identity, Spatial, Compose
 from .transforms import GaussianBlur, Noise, Normalize, RandSelect
 from .transforms import RandCrop, CenterCrop, Pad
 from .transforms import NumpyType
-
+from utils.utils import check_system
 from .data_utils import pkload, gen_feats
 
 import numpy as np
@@ -22,7 +22,7 @@ class SingleData13(Dataset):
         with open(list_file) as f:
             for line in f:
                 line = line.strip()
-                name = line.split('/')[-1]
+                name = line.split('\\')[-1] if check_system() == "Windows" else line.split('/')[-1]
                 names.append(name)
                 path = os.path.join(root, line , name + '_')
                 paths.append(path)
@@ -85,7 +85,7 @@ class SingleData28(Dataset):
         with open(list_file) as f:
             for line in f:
                 line = line.strip()
-                name = line.split('/')[-1]
+                name = line.split('\\')[-1] if check_system() == "Windows" else line.split('/')[-1]
                 names.append(name)
                 path = os.path.join(root, line , name + '_')
                 paths.append(path)
@@ -151,7 +151,7 @@ class SingleData25(Dataset):
         with open(list_file) as f:
             for line in f:
                 line = line.strip()
-                name = line.split('/')[-1]
+                name = line.split('\\')[-1] if check_system() == "Windows" else line.split('/')[-1]
                 names.append(name)
                 path = os.path.join(root, line , name + '_')
                 paths.append(path)
@@ -214,7 +214,7 @@ class SingleData(Dataset):
         with open(list_file) as f:
             for line in f:
                 line = line.strip()
-                name = line.split('/')[-1]
+                name = line.split('\\')[-1] if check_system() == "Windows" else line.split('/')[-1]
                 names.append(name)
                 path = os.path.join(root, line , name + '_')
                 paths.append(path)

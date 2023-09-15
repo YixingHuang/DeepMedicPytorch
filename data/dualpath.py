@@ -16,6 +16,8 @@ import random
 
 import numpy as np
 import multicrop
+from utils.utils import check_system
+
 
 class DualData13(Dataset):
     def __init__(self, list_file, root='', num_patches=20, for_train=False,
@@ -25,7 +27,7 @@ class DualData13(Dataset):
         with open(list_file) as f:
             for line in f:
                 line = line.strip()
-                name = line.split('/')[-1]
+                name = line.split('\\')[-1] if check_system() == "Windows" else line.split('/')[-1]
                 names.append(name)
                 path = os.path.join(root, line , name + '_')
                 paths.append(path)
@@ -146,7 +148,7 @@ class DualData28(Dataset):
         with open(list_file) as f:
             for line in f:
                 line = line.strip()
-                name = line.split('/')[-1]
+                name = line.split('\\')[-1] if check_system() == "Windows" else line.split('/')[-1]
                 names.append(name)
                 path = os.path.join(root, line , name + '_')
                 paths.append(path)
@@ -269,7 +271,7 @@ class DualData25(Dataset):
         with open(list_file) as f:
             for line in f:
                 line = line.strip()
-                name = line.split('/')[-1]
+                name = line.split('\\')[-1] if check_system() == "Windows" else line.split('/')[-1]
                 names.append(name)
                 path = os.path.join(root, line , name + '_')
                 paths.append(path)
@@ -390,7 +392,7 @@ class DualData(Dataset):
         with open(list_file) as f:
             for line in f:
                 line = line.strip()
-                name = line.split('/')[-1]
+                name = line.split('\\')[-1] if check_system() == "Windows" else line.split('/')[-1]
                 names.append(name)
                 path = os.path.join(root, line , name + '_')
                 paths.append(path)

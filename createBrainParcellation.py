@@ -83,7 +83,7 @@ root_dir = os.path.split(filepath)[0]
 file_name = os.path.split(filepath)[1]
 temp_dir = os.path.join(root_dir, '.temp_bp')
 
-print(root_dir, file_name, temp_dir)
+# print(root_dir, file_name, temp_dir)
 if not os.path.exists(temp_dir):
 	os.mkdir(temp_dir)
 
@@ -91,10 +91,10 @@ if not os.path.exists(temp_dir):
 N4ITK_name = file_name[:file_name.find(".nii")]+'_temp.nii'
 N4ITK_path = os.path.join(temp_dir, N4ITK_name)
 N4ITK(filepath, N4ITK_path)
-print('N4ITK', N4ITK_name, N4ITK_path)
+
 
 # Registration
-mni152_1mm_path = './BrainParcellation/template/MNI152_T1_1mm_brain.nii.gz'
+mni152_1mm_path = 'C:/MachineLearning/DeepMedicPytorch/BrainParcellation/template/MNI152_T1_1mm_brain.nii.gz'
 subject2mni_path = os.path.join(temp_dir, file_name[:file_name.index('.nii')]+'_invol2refvol.mat')
 mni2subject_path = os.path.join(temp_dir, file_name[:file_name.index('.nii')]+'_refvol2invol.mat')
 RegisterBrain(N4ITK_path, mni152_1mm_path, subject2mni_path, mni2subject_path)

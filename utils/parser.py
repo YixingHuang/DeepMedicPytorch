@@ -155,6 +155,7 @@ class Parser(AttrDict):
         else:
             fname = os.path.join(path, '../experiments', cfg + '.yaml')
 
+
         self.merge(load(fname))
         self['name'] = cfg
 
