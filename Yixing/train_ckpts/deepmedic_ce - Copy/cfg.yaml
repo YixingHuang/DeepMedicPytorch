@@ -4,12 +4,11 @@ cfg: deepmedic_ce
 criterion: cross_entropy
 data_dir: C:/Data/MICCAI_BraTS_2018_Data_Training
 dataset: DualData
-gpu: '0'
-mini_batch_size: 10
+gpu: '1'
+mini_batch_size: 50
 name: deepmedic_ce
 net: DeepMedic
 net_params:
-  c: 4
   m: 150
   n1: 30
   n2: 40

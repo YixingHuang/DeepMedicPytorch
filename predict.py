@@ -10,6 +10,7 @@ import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
 import torch.optim
+import nibabel as nib
 cudnn.benchmark = True
 
 import multicrop
@@ -157,7 +158,12 @@ def validate(valid_loader, model, batch_size,
             msg += '{:>20}, '.format(name)
 
         if out_dir:
-            np.save(os.path.join(out_dir, name + '_preds'), outputs)
+            # np.save(os.path.join(out_dir, name + '_preds'), outputs)
+            print(outputs.shape)
+            for channel in range(outputs.shape[0]):
+                img_nifti = nib.Nifti1Image(outputs[channel], np.eye(4))
+                save_name = os.path.join(out_dir, name + '_preds_' + str(channel) + '.nii.gz')
+                nib.save(img_nifti, save_name)
 
         if scoring:
             labels  = labels.numpy()
@@ -214,7 +220,7 @@ if __name__ == '__main__':
 
     #args.valid_list = 'valid_0.txt'
     #args.saving = False
-    args.data_dir = '/media/hdd1/pkao/brats2018/validation'
+    args.data_dir = 'C:/Data/MICCAI_BraTS_2018_Data_Validation'
     #args.data_dir = '/usr/data/pkao/brats2018/testing'
     args.valid_list = 'test.txt'
     args.saving = True

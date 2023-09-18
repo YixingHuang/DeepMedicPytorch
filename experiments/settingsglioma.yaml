@@ -7,7 +7,7 @@ test_data_dir: C:/Data/MICCAI_BraTS_2018_Data_Validation
 # The location to save the testing data
 #test_data_dir: /usr/data/pkao/brats2018/testing
 # The location to save the trained models
-train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/train_ckpts2
+train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/train_ckpts
 
 # The default receptive field size for DeepMedic
 sample_size: 25

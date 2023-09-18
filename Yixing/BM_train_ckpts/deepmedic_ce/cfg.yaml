@@ -2,14 +2,14 @@ alpha: null
 batch_size: 50
 cfg: deepmedic_ce
 criterion: cross_entropy
-data_dir: C:/Data/MICCAI_BraTS_2018_Data_Training
+data_dir: C:/Data/UKER_BM
 dataset: DualData
 gpu: '0'
 mini_batch_size: 10
 name: deepmedic_ce
 net: DeepMedic
 net_params:
-  c: 4
+  c: 1
   m: 150
   n1: 30
   n2: 40
@@ -32,9 +32,9 @@ seed: 2001
 start_iter: 0
 sub_sample_size: 19
 target_size: 9
-test_data_dir: C:/Data/MICCAI_BraTS_2018_Data_Validation
+test_data_dir: C:/Data/UKER_BM
 test_transforms: TensorType((torch.float32, torch.int64))
-train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/train_ckpts
+train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_train_ckpts
 train_list: all.txt
 train_transforms: TensorType((torch.float32, torch.float32, torch.int64))
 valid_freq: 50

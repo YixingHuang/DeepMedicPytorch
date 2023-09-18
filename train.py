@@ -48,7 +48,7 @@ def main():
     torch.cuda.manual_seed(args.seed)
     random.seed(args.seed)
     np.random.seed(args.seed)
-
+    print('CUDA', torch.cuda.is_available())
     # setup networks
     Network = getattr(models, args.net)
     model = Network(**args.net_params)
@@ -146,6 +146,7 @@ def main():
         for data in zip(*[d.split(args.mini_batch_size) for d in data]):
 
             data = [t.cuda(non_blocking=True) for t in data]
+
             x1, x2, target = data[:3]
 
             if len(data) > 3: # has mask

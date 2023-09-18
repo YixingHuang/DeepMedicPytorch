@@ -5,6 +5,7 @@ import nibabel as nib
 from utils import Parser
 import time
 from utils.utils import check_system
+
 args = Parser()
 
 patch_shapes = [
@@ -13,7 +14,7 @@ patch_shapes = [
         (28, 28, 28)
         ]
 
-modalities = ('flair', 't1ce', 't1', 't2')
+# modalities = ('')
 
 def nib_load(file_name):
 
@@ -35,17 +36,20 @@ def get_dist2center(patch_shape):
     return dist2center
 
 
-def process(path, has_label=True):
+def process(path, has_label=True, n_channels=1):
+    print(path)
     label = np.array(
-            nib_load(path + 'seg.nii'), dtype='uint8', order='C')
+            nib_load(path[:-1] + '-label.nii.gz'), dtype='float32', order='C')
 
+    # images = np.stack([
+    #     np.array(nib_load(path + modal + '.nii'), dtype='float32', order='C')
+    #     for modal in modalities], -1)
     images = np.stack([
-        np.array(nib_load(path + modal + '.nii'), dtype='float32', order='C')
-        for modal in modalities], -1)
-    # print(images.shape) #(240, 240, 155, 4)
+        np.array(nib_load(path[:-1] + '.nii.gz'), dtype='float32', order='C')], -1)
+    # print(images.shape, label.shape)
     mask = images.sum(-1) > 0
 
-    for k in range(4):
+    for k in range(n_channels):
         x = images[..., k]
         y = x[mask]
         lower = np.percentile(y, 0.2)
@@ -105,7 +109,8 @@ def process(path, has_label=True):
         ex, ey, ez = mask.shape - dist2center[:, 1]   # right-most boundary
         shape = mask.shape
         maps = np.zeros(shape, dtype="int16")
-        print(maps.shape, sx, ex, sy, ey, sz, ez, mask.shape)
+        #(240, 240, 155) 10 229 10 229 10 144 (240, 240, 155)
+        # print(maps.shape, sx, ex, sy, ey, sz, ez, mask.shape)
         maps[sx:ex, sy:ey, sz:ez] = 1
 
         fg = (label > 0).astype('int16')
@@ -129,11 +134,10 @@ def doit(dset):
     root, has_label = dset['root'], dset['has_label']
     file_list = os.path.join(root, dset['flist'])
     subjects = open(file_list).read().splitlines()
-    if check_system()== 'Windows':
+    if check_system() == 'Windows':
         names = [sub.split('\\')[-1] for sub in subjects]
     else:
         names = [sub.split('/')[-1] for sub in subjects]
-
     paths = [os.path.join(root, sub, name + '_') for sub, name in zip(subjects, names)]
     for path in paths:
         process(path, has_label)
@@ -143,11 +147,16 @@ print(args.data_dir)
 # train
 train_set = {
         'root': args.data_dir,
-        'flist': 'all.txt',
+        'flist': 'train.txt',
         'has_label': True
         }
 ####
 
+val_set = {
+        'root': args.test_data_dir, #'/home/thuyen/Data/brats17/Brats17ValidationData',
+        'flist': 'val.txt',
+        'has_label': True
+        }
 # test/validation data
 test_set = {
         'root': args.test_data_dir, #'/home/thuyen/Data/brats17/Brats17ValidationData',
@@ -157,6 +166,7 @@ test_set = {
 
 # docker
 doit(train_set)
+doit(val_set)
 doit(test_set)
 
 # benchmarking the data reading
