@@ -14,8 +14,8 @@ patch_shapes = [
         (28, 28, 28)
         ]
 
-# modalities = ('')
-
+# modalities = ('flair', 't1ce', 't1', 't2')
+modalities = ('flair')
 def nib_load(file_name):
 
     if not os.path.exists(file_name):
@@ -41,11 +41,11 @@ def process(path, has_label=True, n_channels=1):
     label = np.array(
             nib_load(path[:-1] + '-label.nii.gz'), dtype='float32', order='C')
 
-    # images = np.stack([
-    #     np.array(nib_load(path + modal + '.nii'), dtype='float32', order='C')
-    #     for modal in modalities], -1)
     images = np.stack([
-        np.array(nib_load(path[:-1] + '.nii.gz'), dtype='float32', order='C')], -1)
+        np.array(nib_load(path[:-1] + '.nii.gz'), dtype='float32', order='C')
+        for modal in modalities], -1)
+    # images = np.stack([
+    #     np.array(nib_load(path[:-1] + '.nii.gz'), dtype='float32', order='C')], -1)
     # print(images.shape, label.shape)
     mask = images.sum(-1) > 0
 
@@ -140,7 +140,7 @@ def doit(dset):
         names = [sub.split('/')[-1] for sub in subjects]
     paths = [os.path.join(root, sub, name + '_') for sub, name in zip(subjects, names)]
     for path in paths:
-        process(path, has_label)
+        process(path, has_label, n_channels=1)
 
 
 print(args.data_dir)

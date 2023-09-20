@@ -58,6 +58,7 @@ def dice(output, target):
 keys = 'whole', 'core', 'enhancing', 'loss'
 def main():
     ckpts = args.getdir()
+    print(ckpts)
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
     # setup networks
     Network = getattr(models, args.net)
@@ -67,9 +68,9 @@ def main():
     model_file = os.path.join(ckpts, args.ckpt)
     checkpoint = torch.load(model_file)
     model.load_state_dict(checkpoint['state_dict'])
-
+    print(args.dataset)
     Dataset = getattr(datasets, args.dataset)
-
+    print(args.data_dir, args.valid_list)
     valid_list = os.path.join(args.data_dir, args.valid_list)
     valid_set = Dataset(valid_list, root=args.data_dir,
             for_train=False, crop=False, return_target=args.scoring,
@@ -84,14 +85,14 @@ def main():
     start = time.time()
     with torch.no_grad():
         scores = validate(valid_loader, model, args.batch_size,
-                args.out_dir, valid_set.names, scoring=args.scoring)
+                args.out_dir, valid_set.names, scoring=args.scoring, cout=args.net_params['cout'])
 
     msg = 'total time {:.4f} minutes'.format((time.time() - start)/60)
     logging.info(msg)
 
 
 def validate(valid_loader, model, batch_size,
-        out_dir='', names=None, scoring=True, verbose=True):
+        out_dir='', names=None, scoring=True, verbose=True, cout=5):
 
     H, W, T = 240, 240, 155
 
@@ -116,7 +117,7 @@ def validate(valid_loader, model, batch_size,
         if len(data) > 2: # has mask
             x = add_mask(x, data.pop(), 0)
 
-        outputs = torch.zeros((5, h*w*t, target_size, target_size, target_size), dtype=dtype)
+        outputs = torch.zeros((cout, h*w*t, target_size, target_size, target_size), dtype=dtype)
         #targets = torch.zeros((h*w*t, 9, 9, 9), dtype=torch.uint8)
 
         sample_loss = AverageMeter() if scoring and criterion is not None else None
@@ -144,8 +145,8 @@ def validate(valid_loader, model, batch_size,
                 loss = criterion(logit, target)
                 sample_loss.update(loss.item(), target.size(0))
 
-        outputs = outputs.view(5, h, w, t, 9, 9, 9).permute(0, 1, 4, 2, 5, 3, 6)
-        outputs = outputs.reshape(5, h*9, w*9, t*9)
+        outputs = outputs.view(cout, h, w, t, 9, 9, 9).permute(0, 1, 4, 2, 5, 3, 6)
+        outputs = outputs.reshape(cout, h*9, w*9, t*9)
         outputs = outputs[:, :H, :W, :T].numpy()
 
         #targets = targets.view(h, w, t, 9, 9, 9).permute(0, 3, 1, 4, 2, 5).reshape(h*9, w*9, t*9)
@@ -220,13 +221,13 @@ if __name__ == '__main__':
 
     #args.valid_list = 'valid_0.txt'
     #args.saving = False
-    args.data_dir = 'C:/Data/MICCAI_BraTS_2018_Data_Validation'
+    # args.data_dir = 'C:/Data/MICCAI_BraTS_2018_Data_Validation'
     #args.data_dir = '/usr/data/pkao/brats2018/testing'
     args.valid_list = 'test.txt'
     args.saving = True
 
-    args.ckpt = 'model_last.tar'
-    #args.ckpt = 'model_iter_227.tar'
+    # args.ckpt = 'model_last.tar'
+    args.ckpt = 'model_epoch_183.tar'
 
     if args.saving:
         folder = os.path.splitext(args.valid_list)[0]

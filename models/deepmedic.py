@@ -38,7 +38,7 @@ def repeat(x, n=3):
 
 
 class DeepMedic(nn.Module):
-    def __init__(self, c=4, n1=30, n2=40, n3=50, m=150, up=True):
+    def __init__(self, c=4, n1=30, n2=40, n3=50, m=150, up=True, cout=5):
         super(DeepMedic, self).__init__()
         #n1, n2, n3 = 30, 40, 50
 
@@ -66,7 +66,7 @@ class DeepMedic(nn.Module):
         self.fc = nn.Sequential(
                 conv3x3(n, m, 1),
                 conv3x3(m, m, 1),
-                nn.Conv3d(m, 5, 1))
+                nn.Conv3d(m, cout, 1))
 
         for m in self.modules():
             if isinstance(m, nn.Conv3d):
@@ -85,7 +85,7 @@ class DeepMedic(nn.Module):
         return x
 
 class VDeepMedic(nn.Module):
-    def __init__(self, c=4, n1=30, n2=40, n3=50, m=150, up=True):
+    def __init__(self, c=4, n1=30, n2=40, n3=50, m=150, up=True, cout=5):
         super(VDeepMedic, self).__init__()
         #n1, n2, n3 = 30, 40, 50
         # need 29 inputs
@@ -116,7 +116,7 @@ class VDeepMedic(nn.Module):
         self.fc = nn.Sequential(
                 conv3x3(n, m, 1),
                 conv3x3(m, m, 1),
-                nn.Conv3d(m, 5, 1))
+                nn.Conv3d(m, cout, 1))
 
         for m in self.modules():
             if isinstance(m, nn.Conv3d):
@@ -137,7 +137,7 @@ class VDeepMedic(nn.Module):
 
 # no residual connections
 class DeepMedicNR(nn.Module):
-    def __init__(self, c=4, n1=30, n2=40, n3=50, m=150, up=True):
+    def __init__(self, c=4, n1=30, n2=40, n3=50, m=150, up=True, cout=5):
         super(DeepMedicNR, self).__init__()
         #n1, n2, n3 = 30, 40, 50
 
@@ -168,7 +168,7 @@ class DeepMedicNR(nn.Module):
         self.fc = nn.Sequential(
                 conv3x3(n, m, 1),
                 conv3x3(m, m, 1),
-                nn.Conv3d(m, 5, 1))
+                nn.Conv3d(m, cout, 1))
 
         for m in self.modules():
             if isinstance(m, nn.Conv3d):

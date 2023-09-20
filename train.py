@@ -23,6 +23,7 @@ from utils import Parser
 
 from predict import validate, AverageMeter
 
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-cfg', '--cfg', default='deepmedic_ce_45_60_75_b50_mb50_all', type=str)
@@ -48,10 +49,11 @@ def main():
     torch.cuda.manual_seed(args.seed)
     random.seed(args.seed)
     np.random.seed(args.seed)
-    print('CUDA', torch.cuda.is_available())
+
     # setup networks
     Network = getattr(models, args.net)
     model = Network(**args.net_params)
+
     model = model.cuda()
 
     optimizer = getattr(torch.optim, args.opt)(
@@ -76,7 +78,7 @@ def main():
 
     msg += '\n' + str(args)
     logging.info(msg)
-
+    # t0 = time.time()
     # Data loading code
     Dataset = getattr(datasets, args.dataset)
 
@@ -88,7 +90,8 @@ def main():
             transforms=args.train_transforms,
             sample_size=args.sample_size, sub_sample_size=args.sub_sample_size,
             target_size=args.target_size)
-
+    # t1 = time.time()
+    # print("train_set preload time: ", t1-t0)
 
     num_iters = args.num_iters or (len(train_set) * args.num_epochs) // args.batch_size
     num_iters -= args.start_iter
@@ -98,6 +101,7 @@ def main():
         batch_size=args.batch_size,
         collate_fn=train_set.collate, sampler=train_sampler,
         num_workers=args.workers, pin_memory=True, worker_init_fn=init_fn)
+        # num_workers=args.workers, pin_memory=False, worker_init_fn=init_fn)
 
     if args.valid_list:
         valid_list = os.path.join(args.data_dir, args.valid_list)
@@ -123,6 +127,8 @@ def main():
 
     start = time.time()
 
+
+
     enum_batches = len(train_set)/float(args.batch_size)
     args.schedule   = {int(k*enum_batches): v for k, v in args.schedule.items()}
     args.save_freq  = int(enum_batches * args.save_freq)
@@ -132,42 +138,63 @@ def main():
     torch.set_grad_enabled(True)
 
     for i, (data, label) in enumerate(train_loader, args.start_iter):
-
-        ## validation
-        #if args.valid_list and  (i % args.valid_freq) == 0:
+        # # validation
+        # if args.valid_list and  (i % args.valid_freq) == 0:
         #    logging.info('-'*50)
         #    msg  =  'Iter {}, Epoch {:.4f}, {}'.format(i, i/enum_batches, 'validation')
         #    logging.info(msg)
         #    with torch.no_grad():
         #        validate(valid_loader, model, batch_size=args.mini_batch_size, names=valid_set.names)
-
         # actual training
+        # t_i = time.time()
+        # print('time before iterations: ', i, t_i - start)
+        # print(data.shape, label.shape)
         adjust_learning_rate(optimizer, i)
-        for data in zip(*[d.split(args.mini_batch_size) for d in data]):
+        with torch.autograd.profiler.profile() as prof:
+            for data in zip(*[d.split(args.mini_batch_size) for d in data]):
+                data = [t.cuda(non_blocking=True) for t in data]
 
-            data = [t.cuda(non_blocking=True) for t in data]
-
-            x1, x2, target = data[:3]
-
-            if len(data) > 3: # has mask
-                m1, m2 = data[3:]
-                x1 = add_mask(x1, m1, 1)
-                x2 = add_mask(x2, m2, 1)
+                x1, x2, target = data[:3]
+                print(x)
+                if len(data) > 3: # has mask
+                    m1, m2 = data[3:]
+                    x1 = add_mask(x1, m1, 1)
+                    x2 = add_mask(x2, m2, 1)
 
 
-            # compute output
-            output = model((x1, x2)) # output nx5x9x9x9, target nx9x9x9
-            loss = criterion(output, target, args.alpha)
 
-            # measure accuracy and record loss
-            losses.update(loss.item(), target.numel())
+                # compute output
+                output = model((x1, x2)) # output nx5x9x9x9, target nx9x9x9
 
-            # compute gradient and do SGD step
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+                loss = criterion(output, target, args.alpha)
+                # t_i_mini_loss = time.time()
 
-        if (i+1) % args.save_freq == 0:
+                # measure accuracy and record loss
+                losses.update(loss, target.numel())
+                # t_i_mini_loss_update = time.time()
+                # print('mini loss update: ', t_i_mini_loss_update - t_i_mini_loss)
+                # compute gradient and do SGD step
+                optimizer.zero_grad()
+                # t_i_mini_zero_grad = time.time()
+                # print('mini zero grad: ', t_i_mini_zero_grad - t_i_mini_loss_update)
+                loss.backward()
+                # t_i_mini_back = time.time()
+                # print('mini, backward', t_i_mini_back - t_i_mini_zero_grad)
+                optimizer.step()
+                # t_i_mini_step = time.time()
+                # print('mini, step', t_i_mini_step - t_i_mini_back)
+
+        # print(prof.key_averages().table(sort_by="count"))
+
+        if (i + 1) % args.valid_freq == 0:
+            logging.info('-' * 50)
+            msg = 'Iter {}, Epoch {:.4f}, {}'.format(i, i / enum_batches, 'validation')
+            logging.info(msg)
+            with torch.no_grad():
+                validate(valid_loader, model, batch_size=args.mini_batch_size, names=valid_set.names,
+                         cout=args.net_params['cout'])
+
+        if (i + 1 ) % args.save_freq == 0:
             epoch = int((i+1) // enum_batches)
 
             file_name = os.path.join(ckpts, 'model_epoch_{}.tar'.format(epoch))
@@ -179,11 +206,12 @@ def main():
                 file_name)
 
         msg = 'Iter {0:}, Epoch {1:.4f}, Loss {2:.4f}'.format(
-                i+1, (i+1)/enum_batches, losses.avg)
+                i+1, (i+1)/enum_batches, losses.avg.item())
         logging.info(msg)
 
         losses.reset()
-
+        # t_i_end = time.time()
+        # print("i-th data time:", i, t_i_end - t_i)
     i = num_iters + args.start_iter
     file_name = os.path.join(ckpts, 'model_last.tar')
     torch.save({
@@ -195,7 +223,7 @@ def main():
 
     if args.valid_list:
         logging.info('-'*50)
-        msg  =  'Iter {}, Epoch {:.4f}, {}'.format(i, i/enum_batches, 'validate validation data')
+        msg =  'Iter {}, Epoch {:.4f}, {}'.format(i, i/enum_batches, 'validate validation data')
         logging.info(msg)
 
         with torch.no_grad():
