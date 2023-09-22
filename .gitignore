@@ -16,3 +16,4 @@ experiments/deepmedic*
 experiments/unet*
 experiments/munet*
 *.tar
+*.txt

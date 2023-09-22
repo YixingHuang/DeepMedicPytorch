@@ -130,9 +130,9 @@ class DualData13(Dataset):
 
     def collate(self, batch):
         data, label = list(zip(*batch))
+
         data  = [torch.cat(v) for v in zip(*data)]
         label = torch.cat(label)
-
         if self.for_train:
             perm = torch.randperm(data[0].shape[0])
             data = [t[perm] for t in data]
@@ -463,6 +463,14 @@ class DualData(Dataset):
 
         samples = samples.permute(0, 4, 1, 2, 3).contiguous()
         sub_samples = sub_samples.permute(0, 4, 1, 2, 3).contiguous()
+
+        if samples.shape[1] == 1: # one channel, adjust the tensor strides for efficient computation
+            s1 = samples.shape
+            s2 = sub_samples.shape
+            desired_strides = (s1[1] * s1[2] * s1[3] * s1[4], s1[2] * s1[3] * s1[4], s1[3] * s1[4], s1[4], 1)
+            desired_strides2 = (s2[1] * s2[2] * s2[3] * s2[4], s2[2] * s2[3] * s2[4], s2[3] * s2[4], s2[4], 1)
+            samples = torch.as_strided(samples, size=s1, stride=desired_strides)
+            sub_samples = torch.as_strided(sub_samples, size=s2, stride=desired_strides2)
         return (samples, sub_samples, target), label
 
     def __len__(self):
@@ -472,7 +480,7 @@ class DualData(Dataset):
         data, label = list(zip(*batch))
         data  = [torch.cat(v) for v in zip(*data)]
         label = torch.cat(label)
-
+        
         if self.for_train:
             perm = torch.randperm(data[0].shape[0])
             data = [t[perm] for t in data]

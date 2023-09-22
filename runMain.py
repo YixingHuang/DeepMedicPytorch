@@ -7,6 +7,8 @@ cmd2 = 'py  train.py --gpu 0  --cfg deepmedic_ce'
 cmd3 = 'py  predict.py --gpu 0  --cfg deepmedic_ce_BM'
 cmd4 = 'py  train.py --gpu 0  --cfg deepmedic_ce_BM4'
 cmd5 = 'py  predict.py --gpu 0  --cfg deepmedic_ce_BM4'
+cmd6 = 'py  train.py --gpu 0  --cfg deepmedic_ce_BM2'
+cmd7 = 'py  predict.py --gpu 0  --cfg deepmedic_ce_BM2'
 cmds = [cmd1]
 for cmd in cmds:
     os.system(cmd)

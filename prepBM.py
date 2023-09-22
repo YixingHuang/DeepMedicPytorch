@@ -15,7 +15,7 @@ patch_shapes = [
         ]
 
 # modalities = ('flair', 't1ce', 't1', 't2')
-modalities = ('flair')
+modalities = ('flair', )
 def nib_load(file_name):
 
     if not os.path.exists(file_name):
@@ -44,13 +44,15 @@ def process(path, has_label=True, n_channels=1):
     images = np.stack([
         np.array(nib_load(path[:-1] + '.nii.gz'), dtype='float32', order='C')
         for modal in modalities], -1)
-    # images = np.stack([
-    #     np.array(nib_load(path[:-1] + '.nii.gz'), dtype='float32', order='C')], -1)
+
+    # print('strides', images.strides)
+    # # print(modalities)
     # print(images.shape, label.shape)
     mask = images.sum(-1) > 0
-
+    print('nchannels = ', n_channels)
     for k in range(n_channels):
         x = images[..., k]
+        # print(x.shape)
         y = x[mask]
         lower = np.percentile(y, 0.2)
         upper = np.percentile(y, 99.8)
@@ -110,7 +112,6 @@ def process(path, has_label=True, n_channels=1):
         shape = mask.shape
         maps = np.zeros(shape, dtype="int16")
         #(240, 240, 155) 10 229 10 229 10 144 (240, 240, 155)
-        # print(maps.shape, sx, ex, sy, ey, sz, ez, mask.shape)
         maps[sx:ex, sy:ey, sz:ez] = 1
 
         fg = (label > 0).astype('int16')
@@ -140,7 +141,7 @@ def doit(dset):
         names = [sub.split('/')[-1] for sub in subjects]
     paths = [os.path.join(root, sub, name + '_') for sub, name in zip(subjects, names)]
     for path in paths:
-        process(path, has_label, n_channels=1)
+        process(path, has_label, n_channels=len(modalities))
 
 
 print(args.data_dir)

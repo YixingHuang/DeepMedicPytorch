@@ -137,6 +137,9 @@ def main():
     losses = AverageMeter()
     torch.set_grad_enabled(True)
 
+    log_train_name = os.path.join(ckpts, 'log_train.txt')
+    train_log_file = open(log_train_name, 'a')
+
     for i, (data, label) in enumerate(train_loader, args.start_iter):
         # # validation
         # if args.valid_list and  (i % args.valid_freq) == 0:
@@ -147,44 +150,34 @@ def main():
         #        validate(valid_loader, model, batch_size=args.mini_batch_size, names=valid_set.names)
         # actual training
         # t_i = time.time()
-        # print('time before iterations: ', i, t_i - start)
-        # print(data.shape, label.shape)
+
         adjust_learning_rate(optimizer, i)
-        with torch.autograd.profiler.profile() as prof:
-            for data in zip(*[d.split(args.mini_batch_size) for d in data]):
-                data = [t.cuda(non_blocking=True) for t in data]
+        # with torch.autograd.profiler.profile() as prof:
+        for data in zip(*[d.split(args.mini_batch_size) for d in data]):
+            data = [t.cuda(non_blocking=True) for t in data]
 
-                x1, x2, target = data[:3]
-                print(x)
-                if len(data) > 3: # has mask
-                    m1, m2 = data[3:]
-                    x1 = add_mask(x1, m1, 1)
-                    x2 = add_mask(x2, m2, 1)
+            x1, x2, target = data[:3]
 
+            if len(data) > 3: # has mask
+                m1, m2 = data[3:]
+                x1 = add_mask(x1, m1, 1)
+                x2 = add_mask(x2, m2, 1)
 
+            # compute output
+            output = model((x1, x2)) # output nx5x9x9x9, target nx9x9x9
 
-                # compute output
-                output = model((x1, x2)) # output nx5x9x9x9, target nx9x9x9
+            loss = criterion(output, target, args.alpha)
 
-                loss = criterion(output, target, args.alpha)
-                # t_i_mini_loss = time.time()
+            # measure accuracy and record loss
+            losses.update(loss, target.numel())
 
-                # measure accuracy and record loss
-                losses.update(loss, target.numel())
-                # t_i_mini_loss_update = time.time()
-                # print('mini loss update: ', t_i_mini_loss_update - t_i_mini_loss)
-                # compute gradient and do SGD step
-                optimizer.zero_grad()
-                # t_i_mini_zero_grad = time.time()
-                # print('mini zero grad: ', t_i_mini_zero_grad - t_i_mini_loss_update)
-                loss.backward()
-                # t_i_mini_back = time.time()
-                # print('mini, backward', t_i_mini_back - t_i_mini_zero_grad)
-                optimizer.step()
-                # t_i_mini_step = time.time()
-                # print('mini, step', t_i_mini_step - t_i_mini_back)
+            optimizer.zero_grad()
 
-        # print(prof.key_averages().table(sort_by="count"))
+            loss.backward()
+
+            optimizer.step()
+        # t_ii = time.time()
+        # print('iteration time: ', t_ii - t_i)
 
         if (i + 1) % args.valid_freq == 0:
             logging.info('-' * 50)
@@ -192,7 +185,7 @@ def main():
             logging.info(msg)
             with torch.no_grad():
                 validate(valid_loader, model, batch_size=args.mini_batch_size, names=valid_set.names,
-                         cout=args.net_params['cout'])
+                         cout=args.net_params['cout'], ckpts=ckpts)
 
         if (i + 1 ) % args.save_freq == 0:
             epoch = int((i+1) // enum_batches)
@@ -207,11 +200,11 @@ def main():
 
         msg = 'Iter {0:}, Epoch {1:.4f}, Loss {2:.4f}'.format(
                 i+1, (i+1)/enum_batches, losses.avg.item())
+        msg_log = '{:.4f}, {:.4f}\n'.format((i+1)/enum_batches, losses.avg.item())
+        train_log_file.write(msg_log)
         logging.info(msg)
-
         losses.reset()
-        # t_i_end = time.time()
-        # print("i-th data time:", i, t_i_end - t_i)
+
     i = num_iters + args.start_iter
     file_name = os.path.join(ckpts, 'model_last.tar')
     torch.save({
@@ -238,7 +231,7 @@ def main():
 
     msg = 'total time: {:.4f} minutes'.format((time.time() - start)/60)
     logging.info(msg)
-
+    train_log_file.close()
 
 def adjust_learning_rate(optimizer, epoch):
     # reduce learning rate by a factor of 10

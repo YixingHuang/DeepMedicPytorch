@@ -43,6 +43,14 @@ class DeepMedic(nn.Module):
         #n1, n2, n3 = 30, 40, 50
 
         n = 2*n3
+        self.start1 = nn.Sequential(
+                conv3x3(c, n1),
+                # conv3x3(n1, n1)
+            )
+        self.start2 = nn.Sequential(
+                conv3x3(c, n1),
+                # conv3x3(n1, n1)
+            )
         self.branch1 = nn.Sequential(
                 conv3x3(c, n1),
                 conv3x3(n1, n1),
@@ -76,6 +84,17 @@ class DeepMedic(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, inputs):
+        # Debugging for the strides.
+        # print(x1.shape, x1.stride())
+        # desired_strides = (15625, 15625, 625, 25, 1)
+        # x1 = torch.as_strided(x1, size=x1.size(), stride=desired_strides)
+        # print(x1.shape, x1.stride())
+        # with torch.autograd.profiler.profile() as prof:
+        # x1 = self.start1(x1)
+        #     print(x1.shape, x1.stride())
+        # print(prof.key_averages().table(sort_by="count"))
+        # x2 = self.start2(x2)
+
         x1, x2 = inputs
         x1 = self.branch1(x1)
         x2 = self.branch2(x2)

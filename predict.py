@@ -92,7 +92,7 @@ def main():
 
 
 def validate(valid_loader, model, batch_size,
-        out_dir='', names=None, scoring=True, verbose=True, cout=5):
+        out_dir='', names=None, scoring=True, verbose=True, cout=5, ckpts=''):
 
     H, W, T = 240, 240, 155
 
@@ -185,6 +185,11 @@ def validate(valid_loader, model, batch_size,
         msg = 'Average scores: '
         msg += ', '.join(['{}: {:.4f}'.format(k, v) for k, v in zip(keys, vals.avg)])
         logging.info(msg)
+        log_val_name = os.path.join(ckpts, 'log_val.txt')
+        val_log_file = open(log_val_name, 'a')
+        msg_val = ' '.join(['{:.4f}, '.format(v) for v in vals.avg])+'\n'
+        val_log_file.write(msg_val)
+        val_log_file.close()
 
     model.train()
     return vals.avg
@@ -227,7 +232,7 @@ if __name__ == '__main__':
     args.saving = True
 
     # args.ckpt = 'model_last.tar'
-    args.ckpt = 'model_epoch_183.tar'
+    args.ckpt = 'model_epoch_39.tar'
 
     if args.saving:
         folder = os.path.splitext(args.valid_list)[0]

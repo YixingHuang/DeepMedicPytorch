@@ -1,11 +1,11 @@
 alpha: null
-batch_size: 50
+batch_size: 100
 cfg: deepmedic_ce_BM
 criterion: cross_entropy
-data_dir: C:/Data/UKER_BM
+data_dir: C:/Data/UKER_BM_Channel1
 dataset: DualData
 gpu: '0'
-mini_batch_size: 10
+mini_batch_size: 100
 name: deepmedic_ce_BM
 net: DeepMedic
 net_params:
@@ -33,11 +33,11 @@ seed: 2001
 start_iter: 0
 sub_sample_size: 19
 target_size: 9
-test_data_dir: C:/Data/UKER_BM
+test_data_dir: C:/Data/UKER_BM_Channel1
 test_transforms: TensorType((torch.float32, torch.int64))
 train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_train_ckpts
 train_list: train.txt
 train_transforms: TensorType((torch.float32, torch.float32, torch.int64))
 valid_freq: 5
 valid_list: val.txt
-workers: 16
+workers: 32
