@@ -81,7 +81,7 @@ def main():
         valid_set, batch_size=1, shuffle=False,
         collate_fn=valid_set.collate,
         num_workers=4, pin_memory=True)
-
+    print('cout', args.net_params['cout'])
     start = time.time()
     with torch.no_grad():
         scores = validate(valid_loader, model, args.batch_size,
@@ -135,7 +135,7 @@ def validate(valid_loader, model, batch_size,
 
             # copy output
             start = b*batch_size
-            end   = start + output.shape[0]
+            end = start + output.shape[0]
             outputs[:, start:end] = output.permute(1, 0, 2, 3, 4).cpu()
 
             #targets[start:end] = target.type(dtype).cpu()
@@ -160,11 +160,15 @@ def validate(valid_loader, model, batch_size,
 
         if out_dir:
             # np.save(os.path.join(out_dir, name + '_preds'), outputs)
-            print(outputs.shape)
+            # print(outputs.shape) # (2, 240, 240, 155)
             for channel in range(outputs.shape[0]):
                 img_nifti = nib.Nifti1Image(outputs[channel], np.eye(4))
                 save_name = os.path.join(out_dir, name + '_preds_' + str(channel) + '.nii.gz')
                 nib.save(img_nifti, save_name)
+            binary = (outputs[1] > 0.5).astype(np.float32)
+            img_nifti = nib.Nifti1Image(binary, np.eye(4))
+            save_name = os.path.join(out_dir, name + '_Segm.nii.gz')
+            nib.save(img_nifti, save_name)
 
         if scoring:
             labels  = labels.numpy()
@@ -220,7 +224,8 @@ if __name__ == '__main__':
 
     parser.add_argument('-cfg', '--cfg', default='deepmedic_ce_50_50_c25_all', type=str)
     parser.add_argument('-gpu', '--gpu', default='0', type=str)
-
+    parser.add_argument('-ckpt', '--ckpt', default='model_best.tar', type=str)
+    parser.add_argument('-folder', '--folder', default='test', type=str)
     args = parser.parse_args()
     args = Parser(args.cfg, log='test').add_args(args)
 
@@ -232,11 +237,12 @@ if __name__ == '__main__':
     args.saving = True
 
     # args.ckpt = 'model_last.tar'
-    args.ckpt = 'model_epoch_39.tar'
+    # args.ckpt = 'model_epoch_39.tar'
 
     if args.saving:
         folder = os.path.splitext(args.valid_list)[0]
-        out_dir = os.path.join('output', args.name, folder)
+        out_dir = os.path.join('output', args.name, args.folder)
+        # print('HYX', args.name, folder)
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
         args.out_dir = out_dir

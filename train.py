@@ -127,11 +127,9 @@ def main():
 
     start = time.time()
 
-
-
     enum_batches = len(train_set)/float(args.batch_size)
-    args.schedule   = {int(k*enum_batches): v for k, v in args.schedule.items()}
-    args.save_freq  = int(enum_batches * args.save_freq)
+    args.schedule = {int(k*enum_batches): v for k, v in args.schedule.items()}
+    args.save_freq = int(enum_batches * args.save_freq)
     args.valid_freq = int(enum_batches * args.valid_freq)
 
     losses = AverageMeter()
@@ -139,6 +137,8 @@ def main():
 
     log_train_name = os.path.join(ckpts, 'log_train.txt')
     train_log_file = open(log_train_name, 'a')
+
+    best_val = 0
 
     for i, (data, label) in enumerate(train_loader, args.start_iter):
         # # validation
@@ -184,8 +184,17 @@ def main():
             msg = 'Iter {}, Epoch {:.4f}, {}'.format(i, i / enum_batches, 'validation')
             logging.info(msg)
             with torch.no_grad():
-                validate(valid_loader, model, batch_size=args.mini_batch_size, names=valid_set.names,
+                val_metric = validate(valid_loader, model, batch_size=args.mini_batch_size, names=valid_set.names,
                          cout=args.net_params['cout'], ckpts=ckpts)
+                if val_metric[0] > best_val:
+                    best_val = val_metric[0]
+                    file_name = os.path.join(ckpts, 'model_best.tar')
+                    torch.save({
+                        'iter': i + 1,
+                        'state_dict': model.state_dict(),
+                        'optim_dict': optimizer.state_dict(),
+                    },
+                        file_name)
 
         if (i + 1 ) % args.save_freq == 0:
             epoch = int((i+1) // enum_batches)
@@ -220,7 +229,8 @@ def main():
         logging.info(msg)
 
         with torch.no_grad():
-            validate(valid_loader, model, batch_size=args.mini_batch_size, names=valid_set.names, out_dir = args.out)
+            validate(valid_loader, model, batch_size=args.mini_batch_size, names=valid_set.names, out_dir = args.out,
+                     cout=args.net_params['cout'])
 
         #logging.info('-'*50)
         #msg  =  'Iter {}, Epoch {:.4f}, {}'.format(i, i/enum_batches, 'validate training data')

@@ -480,7 +480,7 @@ class DualData(Dataset):
         data, label = list(zip(*batch))
         data  = [torch.cat(v) for v in zip(*data)]
         label = torch.cat(label)
-        
+
         if self.for_train:
             perm = torch.randperm(data[0].shape[0])
             data = [t[perm] for t in data]

@@ -5,6 +5,7 @@ import torch
 
 cross_entropy = F.cross_entropy
 
+
 def hard_cross_entropy(output, target, alpha=3.0):
     mtx = F.cross_entropy(output, target, reduce=False)
 
@@ -82,8 +83,6 @@ def mean_cross_entropy(output, target, alpha=3.0):
     return loss
 
 
-
-
 eps = 0.1
 def dice(output, target):
     num = 2*(output*target).sum() + eps
@@ -101,6 +100,7 @@ def cross_entropy_dice(output, target, weight=1.0):
 
     return loss
 
+
 # in original paper: class 3 is ignored
 # https://github.com/MIC-DKFZ/BraTS2017/blob/master/dataset.py#L283
 # dice score per image per positive class, then aveg
@@ -112,6 +112,7 @@ def dice_per_im(output, target):
     den = output.sum(1) + target.sum(1) + eps
     return 1.0 - (num/den).mean()
 
+
 def cross_entropy_dice_per_im(output, target, weight=1.0):
     loss = weight * F.cross_entropy(output, target)
     output = F.softmax(output, dim=1)
@@ -121,3 +122,37 @@ def cross_entropy_dice_per_im(output, target, weight=1.0):
         loss += 0.25*dice_per_im(o, t)
 
     return loss
+
+
+def jvss(y_predict, y_gt, alpha=1, eps=0.1, softmax=True, num_classes=2): #alpha value is not necessary.
+    ce_loss = F.cross_entropy(y_predict, y_gt)
+    # multiple channels as the output
+    # y_predict: the output of the network;
+    # y_gt: the ground truth classification labels
+    # softmax: if True, apply softmax to convert y_predict to make the values in [0, 1] and sum to 1.
+    # num_classes: number of classes to convert to one-hot coding
+    # print('shape before 0', y_predict.shape, y_gt.shape)
+    if softmax:
+        y_predict = F.softmax(y_predict, dim=1)
+    # print('shape aft softmax', y_predict.shape)
+    y_gt = F.one_hot(y_gt, num_classes=num_classes)
+    # print('shape before 1', y_predict.shape, y_gt.shape) #shape before 1 torch.Size([100, 2, 9, 9, 9]) torch.Size([100, 9, 9, 9, 2])
+    Channel1_weighted_log_p_y_given_x_train = y_predict[:, 1, :, :, :]
+    Channel1_y_one_hot = y_gt[:, :, :, :, 1] # the class channel is at the last dimension after one_hot conversion.  y_gt[:, 1, :, :, :]
+    # print('shape', Channel1_weighted_log_p_y_given_x_train.shape, Channel1_y_one_hot.shape)
+    product = Channel1_weighted_log_p_y_given_x_train * Channel1_y_one_hot
+    maxprod = torch.amax(product, dim=(1,2,3))
+    maxonehot = torch.amax(Channel1_y_one_hot, dim=(1,2,3))
+    resultTP = torch.divide(torch.sum(maxprod), torch.sum(maxonehot) + eps)
+
+    # True negatives
+    Channel0_y_one_hot = y_gt[:, :, :, :, 0]# y_gt[:, 0, :, :, :]
+    PatchesNegOneHot = torch.amax(Channel0_y_one_hot, dim=(1,2,3))
+    MaxPrbNeg = torch.multiply(PatchesNegOneHot, torch.amax(Channel1_weighted_log_p_y_given_x_train, dim=(1,2,3)))
+    resultTN = 1. - torch.divide(torch.sum(MaxPrbNeg), torch.sum(PatchesNegOneHot) + eps)
+    alpha = 0.5  # 0.995 for high sensitivity, 0.5 for high precision.
+    # For your own data, a different alpha value may apply
+    vss_loss = 1. - ((1 - alpha) * resultTN + alpha * resultTP)
+    # print('vss cost', vss_loss.item(), 'Sensitivity', resultTP.item(), 'Specificity', resultTN.item())
+    cost = ce_loss + vss_loss
+    return cost
