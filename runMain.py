@@ -1,6 +1,7 @@
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = "1"
 
+## UKER  dataset
 cmd0 = 'py  prepBM.py'
 cmd1 = 'py  train.py --gpu 0  --cfg deepmedic_ce_BM'
 cmd2 = 'py  train.py --gpu 0  --cfg deepmedic_ce'
@@ -25,6 +26,35 @@ cmd18 = 'py  predict.py --gpu 0  --cfg deepmedic_jvssPr_BM --ckpt model_last.tar
 cmd20 = 'py  predict.py --gpu 0  --cfg deepmedic_ce_BM --ckpt model_last.tar  --folder test_last'
 cmd21 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_BM --ckpt model_last.tar  --folder test_last'
 cmd22 = 'py  predict.py --gpu 0  --cfg deepmedic_jvssS_BM --ckpt model_last.tar  --folder test_last'
-cmds = [cmd20, cmd21, cmd22]
+
+
+### BRATS dataset
+
+cmd30 = 'py  train.py --gpu 0  --cfg deepmedic_vss_BraTS_Precision'
+cmd31 = 'py  train.py --gpu 0  --cfg deepmedic_vss_BraTS'
+cmd32 = 'py  train.py --gpu 0  --cfg deepmedic_vss_BraTS_Sensitivity'
+
+cmd33 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_BraTS'
+cmd34 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_BraTS_Precision'
+cmd35 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_BraTS_Sensitivity'
+
+cmd36 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_BraTS --ckpt model_last.tar  --folder test_last'
+cmd37 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_BraTS_Precision --ckpt model_last.tar  --folder test_last'
+cmd38 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_BraTS_Sensitivity --ckpt model_last.tar  --folder test_last'
+
+cmd40 = 'py  train.py --gpu 0  --cfg deepmedic_vss_NYU_Precision'
+cmd41 = 'py  train.py --gpu 0  --cfg deepmedic_vss_NYU'
+cmd42 = 'py  train.py --gpu 0  --cfg deepmedic_vss_NYU_Sensitivity'
+
+cmd43 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_NYU_Precision'
+cmd44 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_NYU'
+cmd45 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_NYU_Sensitivity'
+
+cmd46 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_NYU_Precision --ckpt model_last.tar  --folder test_last'
+cmd47 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_NYU --ckpt model_last.tar  --folder test_last'
+cmd48 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_NYU_Sensitivity --ckpt model_last.tar  --folder test_last'
+# cmds = [cmd30, cmd31, cmd32, cmd33, cmd34, cmd35, cmd36, cmd37, cmd38]
+# cmds = [cmd32, cmd33, cmd34, cmd35, cmd36, cmd37, cmd38, cmd40, cmd41, cmd42, cmd43, cmd44, cmd45, cmd46, cmd47, cmd48]
+cmds = [cmd40, cmd41, cmd42, cmd43, cmd44, cmd45, cmd46, cmd47, cmd48]
 for cmd in cmds:
     os.system(cmd)

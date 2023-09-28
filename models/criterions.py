@@ -124,7 +124,7 @@ def cross_entropy_dice_per_im(output, target, weight=1.0):
     return loss
 
 
-def jvss(y_predict, y_gt, alpha=1, eps=0.1, softmax=True, num_classes=2): #alpha value is not necessary.
+def jvss(y_predict, y_gt, alpha=0.95, eps=0.1, softmax=True, num_classes=2): #alpha value is not necessary.
     ce_loss = F.cross_entropy(y_predict, y_gt)
     # multiple channels as the output
     # y_predict: the output of the network;
@@ -150,7 +150,7 @@ def jvss(y_predict, y_gt, alpha=1, eps=0.1, softmax=True, num_classes=2): #alpha
     PatchesNegOneHot = torch.amax(Channel0_y_one_hot, dim=(1,2,3))
     MaxPrbNeg = torch.multiply(PatchesNegOneHot, torch.amax(Channel1_weighted_log_p_y_given_x_train, dim=(1,2,3)))
     resultTN = 1. - torch.divide(torch.sum(MaxPrbNeg), torch.sum(PatchesNegOneHot) + eps)
-    alpha = 0.5  # 0.995 for high sensitivity, 0.5 for high precision.
+    # alpha = 0.5  # 0.995 for high sensitivity, 0.5 for high precision.
     # For your own data, a different alpha value may apply
     vss_loss = 1. - ((1 - alpha) * resultTN + alpha * resultTP)
     # print('vss cost', vss_loss.item(), 'Sensitivity', resultTP.item(), 'Specificity', resultTN.item())

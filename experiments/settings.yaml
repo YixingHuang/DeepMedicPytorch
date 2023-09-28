@@ -1,13 +1,13 @@
 
 root: C:/MachineLearning/DeepMedicPytorch/
 # The location to store the training data
-data_dir: C:/Data/UKER_BM
+data_dir: C:/Data/ASNR-MICCAI-BraTS2023-MET-Challenge-TrainingData_combined
 # The location to store the validation data
-test_data_dir: C:/Data/UKER_BM
+test_data_dir: C:/Data/ASNR-MICCAI-BraTS2023-MET-Challenge-TrainingData_combined
 # The location to save the testing data
 #test_data_dir: /usr/data/pkao/brats2018/testing
 # The location to save the trained models
-train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_train_ckpts
+train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_train_ckpts_BraTS
 
 # The default receptive field size for DeepMedic
 sample_size: 25
