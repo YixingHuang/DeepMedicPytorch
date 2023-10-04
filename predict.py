@@ -67,12 +67,14 @@ def main():
 
     model_file = os.path.join(ckpts, args.ckpt)
     checkpoint = torch.load(model_file)
-    model.load_state_dict(checkpoint['state_dict'])
+    model.load_state_dict(checkpoint['state_dict'], strict=False)
     print(args.dataset)
     Dataset = getattr(datasets, args.dataset)
     print(args.data_dir, args.valid_list)
-    valid_list = os.path.join(args.data_dir, args.valid_list)
-    valid_set = Dataset(valid_list, root=args.data_dir,
+
+    print(args.test_data_dir)
+    valid_list = os.path.join(args.test_data_dir, args.valid_list)
+    valid_set = Dataset(valid_list, root=args.test_data_dir,
             for_train=False, crop=False, return_target=args.scoring,
             transforms=args.test_transforms,
             sample_size=args.sample_size, sub_sample_size=args.sub_sample_size,

@@ -38,11 +38,12 @@ def get_dist2center(patch_shape):
 
 def process(path, has_label=True, n_channels=1):
     print(path)
+
     label = np.array(
-            nib_load(path[:-1] + '-seg_ce_ud.nii.gz'), dtype='float32', order='C')
+            nib_load(path[:-1] + '-seg.nii.gz'), dtype='float32', order='C')
 
     images = np.stack([
-        np.array(nib_load(path[:-1] + '-t1c_bias_norm_ud.nii.gz'), dtype='float32', order='C')
+        np.array(nib_load(path[:-1] + '-t1c_bias_norm.nii.gz'), dtype='float32', order='C')
         for modal in modalities], -1)
 
     # print('strides', images.strides)
@@ -144,8 +145,8 @@ def doit(dset):
         process(path, has_label, n_channels=len(modalities))
 
 
-args.data_dir = 'C:/Data/NYU_Release2'
-args.test_data_dir = 'C:/Data/NYU_Release2'
+args.data_dir = 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TRAIN_resample'
+args.test_data_dir = 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_resample'
 
 print(args.data_dir)
 # train
@@ -163,7 +164,7 @@ train2_set = {
 ####
 
 val_set = {
-        'root': args.test_data_dir, #'/home/thuyen/Data/brats17/Brats17ValidationData',
+        'root': args.data_dir, #'/home/thuyen/Data/brats17/Brats17ValidationData',
         'flist': 'val.txt',
         'has_label': True
         }
@@ -175,9 +176,9 @@ test_set = {
         }
 
 # docker
-doit(train_set)
+# doit(train_set)
 doit(val_set)
-doit(test_set)
+# doit(test_set)
 # doit(train2_set)
 
 # benchmarking the data reading

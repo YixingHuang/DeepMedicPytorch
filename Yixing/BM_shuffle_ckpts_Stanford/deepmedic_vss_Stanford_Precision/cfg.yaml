@@ -1,12 +1,12 @@
-alpha: 0.95
-batch_size: 100
-cfg: deepmedic_vss_NYU
+alpha: 0.5
+batch_size: 50
+cfg: deepmedic_vss_Stanford_Precision
 criterion: jvss
-data_dir: C:/Data/NYU_Release2
+data_dir: C:/Data/StanfordMetShare
 dataset: DualData
 gpu: '0'
-mini_batch_size: 50
-name: deepmedic_vss_NYU
+mini_batch_size: 10
+name: deepmedic_vss_Stanford_Precision
 net: DeepMedic
 net_params:
   c: 1
@@ -16,7 +16,7 @@ net_params:
   n2: 40
   n3: 50
 num_epochs: 300
-num_patches: 10
+num_patches: 20
 opt: Adam
 opt_params:
   amsgrad: true
@@ -25,7 +25,7 @@ opt_params:
 out: ''
 root: C:/MachineLearning/DeepMedicPytorch/
 sample_size: 25
-save_freq: 5
+save_freq: 50
 schedule:
   150: null
   250: null
@@ -33,9 +33,9 @@ seed: 2001
 start_iter: 0
 sub_sample_size: 19
 target_size: 9
-test_data_dir: C:/Data/NYU_Release2
+test_data_dir: C:/Data/StanfordMetShare
 test_transforms: TensorType((torch.float32, torch.int64))
-train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_train_ckpts_NYU
+train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_shuffle_ckpts_Stanford
 train_list: train.txt
 train_transforms: TensorType((torch.float32, torch.float32, torch.int64))
 valid_freq: 5

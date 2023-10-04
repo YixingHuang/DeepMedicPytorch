@@ -168,7 +168,7 @@ val_set = {
 test_set = {
         'root': args.test_data_dir, #'/home/thuyen/Data/brats17/Brats17ValidationData',
         'flist': 'test.txt',
-        'has_label': False
+        'has_label': True
         }
 
 # docker

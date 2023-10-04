@@ -66,8 +66,8 @@ def main():
         if os.path.isfile(args.resume):
             print("=> loading checkpoint '{}'".format(args.resume))
             checkpoint = torch.load(args.resume)
-            args.start_iter = checkpoint['iter']
-            model.load_state_dict(checkpoint['state_dict'])
+            # args.start_iter = checkpoint['iter']
+            model.load_state_dict(checkpoint['state_dict'], strict=False)
             optimizer.load_state_dict(checkpoint['optim_dict'])
             msg = ("=> loaded checkpoint '{}' (iter {})"
                   .format(args.resume, checkpoint['iter']))

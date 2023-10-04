@@ -103,6 +103,68 @@ class DeepMedic(nn.Module):
         x = self.fc(x)
         return x
 
+
+class DeepMedicWide(nn.Module):
+    def __init__(self, c=4, n1=30, n2=40, n3=50, m=150, up=True, cout=5):
+        super(DeepMedicWide, self).__init__()
+        #n1, n2, n3 = 30, 40, 50
+
+        n = 2*n3
+
+        self.branch1 = nn.Sequential(
+                conv3x3(c, n1),
+                conv3x3(n1, n1),
+                ResBlock(n1, n2),
+                ResBlock(n2, n2),
+                ResBlock(n2, n3))
+
+        self.branch2 = nn.Sequential(
+                conv3x3(c, n1),
+                conv3x3(n1, n1),
+                conv3x3(n1, n2),
+                conv3x3(n2, n2),
+                conv3x3(n2, n2),
+                conv3x3(n2, n2),
+                conv3x3(n2, n3),
+                conv3x3(n3, n3))
+
+        self.branch3 = nn.Sequential(
+            conv3x3(c, n1),
+            conv3x3(n1, n1),
+            conv3x3(n1, n2),
+            conv3x3(n2, n2),
+            conv3x3(n2, n2),
+            conv3x3(n2, n2),
+            conv3x3(n2, n3),
+            conv3x3(n3, n3))
+
+        self.up3 = nn.Upsample(scale_factor=3,
+                mode='trilinear', align_corners=False) if up else repeat
+
+        self.fc = nn.Sequential(
+                conv3x3(n, m, 1),
+                conv3x3(m, m, 1),
+                nn.Conv3d(m, cout, 1))
+
+        for m in self.modules():
+            if isinstance(m, nn.Conv3d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+            elif isinstance(m, nn.BatchNorm3d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
+
+    def forward(self, inputs):
+
+        x1, x2, x3 = inputs
+        x1 = self.branch1(x1)
+        x2 = self.branch2(x2)
+        x3 = self.branch3(x3)
+        x2 = self.up3(x2)
+        x = torch.cat([x1, x2], 1)
+        x = self.fc(x)
+        return x
+
+
 class VDeepMedic(nn.Module):
     def __init__(self, c=4, n1=30, n2=40, n3=50, m=150, up=True, cout=5):
         super(VDeepMedic, self).__init__()

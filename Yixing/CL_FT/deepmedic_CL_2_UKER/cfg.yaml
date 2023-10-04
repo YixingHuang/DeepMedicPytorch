@@ -1,12 +1,12 @@
-alpha: 0.95
+alpha: null
 batch_size: 100
-cfg: deepmedic_vss_NYU
+cfg: deepmedic_CL_2_UKER
 criterion: jvss
-data_dir: C:/Data/NYU_Release2
+data_dir: C:/Data/UKER_BM_Channel1
 dataset: DualData
 gpu: '0'
-mini_batch_size: 50
-name: deepmedic_vss_NYU
+mini_batch_size: 100
+name: deepmedic_CL_2_UKER
 net: DeepMedic
 net_params:
   c: 1
@@ -15,14 +15,15 @@ net_params:
   n1: 30
   n2: 40
   n3: 50
-num_epochs: 300
-num_patches: 10
+num_epochs: 100
+num_patches: 20
 opt: Adam
 opt_params:
   amsgrad: true
   lr: 0.001
   weight_decay: 0.0001
 out: ''
+resume: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_shuffle_ckpts_UCSF/deepmedic_vss_UCSF_Precision/model_best.tar
 root: C:/MachineLearning/DeepMedicPytorch/
 sample_size: 25
 save_freq: 5
@@ -33,9 +34,9 @@ seed: 2001
 start_iter: 0
 sub_sample_size: 19
 target_size: 9
-test_data_dir: C:/Data/NYU_Release2
+test_data_dir: C:/Data/UKER_BM_Channel1
 test_transforms: TensorType((torch.float32, torch.int64))
-train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_train_ckpts_NYU
+train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/CL_FT
 train_list: train.txt
 train_transforms: TensorType((torch.float32, torch.float32, torch.int64))
 valid_freq: 5
