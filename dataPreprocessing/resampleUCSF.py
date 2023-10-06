@@ -49,7 +49,8 @@ def resample(nii_path, resampled_nii_path, seg_path, save_seg_path):
         matrix=resampling_affine[:3, :3],  # 3x3 affine transformation
         offset=resampling_affine[:3, 3],  # Translation vector
         output_shape=(240, 240, 155),  # New shape
-        order=1  # Cubic spline interpolation
+        order=1  #
+
     )
 
     resampled_seg_data = affine_transform(

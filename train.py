@@ -94,6 +94,7 @@ def main():
     # print("train_set preload time: ", t1-t0)
 
     num_iters = args.num_iters or (len(train_set) * args.num_epochs) // args.batch_size
+    num_iters_valid_change = (len(train_set) * args.num_epochs_valid_change) // args.batch_size
     num_iters -= args.start_iter
     train_sampler = CycleSampler(len(train_set), num_iters*args.batch_size)
     train_loader = DataLoader(
@@ -177,7 +178,8 @@ def main():
             optimizer.step()
         # t_ii = time.time()
         # print('iteration time: ', t_ii - t_i)
-
+        if (i + 1) == num_iters_valid_change:
+            args.valid_freq = int(enum_batches * args.valid_freq_new)
         if (i + 1) % args.valid_freq == 0:
             logging.info('-' * 50)
             msg = 'Iter {}, Epoch {:.4f}, {}'.format(i, i / enum_batches, 'validation')
