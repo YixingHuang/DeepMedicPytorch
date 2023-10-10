@@ -1,0 +1,46 @@
+alpha: 0.5
+batch_size: 100
+cfg: deepmedic_CWT_27_UKER
+criterion: jvss
+data_dir: C:/Data/UKER_BM_Channel1
+dataset: DualData
+gpu: '0'
+mini_batch_size: 100
+name: deepmedic_CWT_27_UKER
+net: DeepMedic
+net_params:
+  c: 1
+  cout: 2
+  m: 150
+  n1: 30
+  n2: 40
+  n3: 50
+num_epochs: 20
+num_epochs_valid_change: 100
+num_patches: 20
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.001
+  weight_decay: 0.0001
+out: ''
+resume: C:/MachineLearning/DeepMedicPytorch/Yixing/CWT/deepmedic_CWT_26_UCSF/model_best.tar
+root: C:/MachineLearning/DeepMedicPytorch/
+sample_size: 25
+save_freq: 5
+schedule:
+  150: null
+  250: null
+seed: 2001
+start_iter: 0
+sub_sample_size: 19
+target_size: 9
+test_data_dir: C:/Data/UKER_BM_Channel1
+test_transforms: TensorType((torch.float32, torch.int64))
+train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/CWT
+train_list: train.txt
+train_transforms: TensorType((torch.float32, torch.float32, torch.int64))
+valid_freq: 2
+valid_freq_new: 2
+valid_list: val.txt
+workers: 32
