@@ -16,6 +16,7 @@ def resample(nii_path, resampled_nii_path, seg_path, save_seg_path):
 
     seg = nib.load(seg_path)
     seg_data = seg.get_fdata()
+    seg_data = np.where((seg_data == 3) | (seg_data == 1), 1, 0)
 
     # Define the source and target affine transformations
     src_affine = img.affine
@@ -44,13 +45,13 @@ def resample(nii_path, resampled_nii_path, seg_path, save_seg_path):
     resampling_affine = np.linalg.inv(src_affine).dot(target_affine)
 
     # Resample the image using affine transformation
-    resampled_data = affine_transform(
-        input=data,
-        matrix=resampling_affine[:3, :3],  # 3x3 affine transformation
-        offset=resampling_affine[:3, 3],  # Translation vector
-        output_shape=(240, 240, 155),  # New shape
-        order=1  # Cubic spline interpolation
-    )
+    # resampled_data = affine_transform(
+    #     input=data,
+    #     matrix=resampling_affine[:3, :3],  # 3x3 affine transformation
+    #     offset=resampling_affine[:3, 3],  # Translation vector
+    #     output_shape=(240, 240, 155),  # New shape
+    #     order=1  # Cubic spline interpolation
+    # )
 
     resampled_seg_data = affine_transform(
         input=seg_data,
@@ -59,12 +60,13 @@ def resample(nii_path, resampled_nii_path, seg_path, save_seg_path):
         output_shape=(240, 240, 155),  # New shape
         order=3  # Cubic spline interpolation
     )
+
     resampled_seg_data = np.where(resampled_seg_data > 0.1, 1, 0)
     # Create a new NIfTI image with the resampled data and target affine
-    resampled_img = nib.Nifti1Image(resampled_data, target_affine)
-
-    # Save the resampled NIfTI image
-    resampled_img.to_filename(resampled_nii_path)
+    # resampled_img = nib.Nifti1Image(resampled_data, target_affine)
+    #
+    # # Save the resampled NIfTI image
+    # resampled_img.to_filename(resampled_nii_path)
 
     resampled_seg = nib.Nifti1Image(resampled_seg_data, target_affine)
 
@@ -73,7 +75,7 @@ def resample(nii_path, resampled_nii_path, seg_path, save_seg_path):
 
 def main():
     # search = 'C:/Data/NYU_Release2'
-    search = 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BraTS-METS/UCSF_BraTS-METS_metsSRI'
+    search = 'F:/Data/UCSF_BraTS-METS_metsSRI'
     target = 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_resample'
     # search = 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BraTS-METS/UCSF_BraTS-METS_metsSRI'
     directories = get_directories(search)
@@ -95,7 +97,7 @@ def main():
         save_name = os.path.join(target, subfolder, subfolder + norm_suffix)
         save_seg_name = os.path.join(target, subfolder, subfolder + new_seg_suffix)
         resample(file_name, save_name, seg_name, save_seg_name)
-        print(i)
+        print(i, subfolder)
 
 
 if __name__ == "__main__":

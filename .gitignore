@@ -17,3 +17,5 @@ experiments/unet*
 experiments/munet*
 *.tar
 *.txt
+*.zip
+*.7z

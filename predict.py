@@ -163,10 +163,10 @@ def validate(valid_loader, model, batch_size,
         if out_dir:
             # np.save(os.path.join(out_dir, name + '_preds'), outputs)
             # print(outputs.shape) # (2, 240, 240, 155)
-            for channel in range(outputs.shape[0]):
-                img_nifti = nib.Nifti1Image(outputs[channel], np.eye(4))
-                save_name = os.path.join(out_dir, name + '_preds_' + str(channel) + '.nii.gz')
-                nib.save(img_nifti, save_name)
+            # for channel in range(outputs.shape[0]):
+            #     img_nifti = nib.Nifti1Image(outputs[channel], np.eye(4))
+            #     save_name = os.path.join(out_dir, name + '_preds_' + str(channel) + '.nii.gz')
+            #     nib.save(img_nifti, save_name)
             binary = (outputs[1] > 0.5).astype(np.float32)
             img_nifti = nib.Nifti1Image(binary, np.eye(4))
             save_name = os.path.join(out_dir, name + '_Segm.nii.gz')

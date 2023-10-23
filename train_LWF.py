@@ -16,6 +16,7 @@ import numpy as np
 
 import models
 from models import criterions
+from models.criterions import knowledge_distillation_loss
 from data import datasets
 from data.sampler import CycleSampler
 from data.data_utils import add_mask, init_fn
@@ -76,6 +77,17 @@ def main():
             msg = "=> no checkpoint found at '{}'".format(args.resume)
     else:
         msg = '-------------- New training session ----------------'
+
+    args.teacher_path = args.resume # the resume path is usually the teacher model path
+    model_teacher = Network(**args.net_params)
+    model_teacher = model_teacher.cuda()
+    if os.path.isfile(args.teacher_path):
+        checkpoint = torch.load(args.teacher_path)
+        model_teacher.load_state_dict(checkpoint['state_dict'], strict=False)
+        print("=> loaded teacher model checkpoint '{}'".format(args.teacher_path))
+    else:
+        msg = "=> no checkpoint found at '{}'".format(args.teacher_path)
+    model_teacher.eval()
 
     msg += '\n' + str(args)
     logging.info(msg)
@@ -167,7 +179,11 @@ def main():
 
             # compute output
             output = model((x1, x2)) # output nx5x9x9x9, target nx9x9x9
-            loss = criterion(output, target, args.alpha)
+            output_teacher = model_teacher((x1, x2))
+            kdl_loss = knowledge_distillation_loss(output, output_teacher, temperature=2)
+            seg_loss = criterion(output, target, args.alpha)
+            loss = seg_loss + args.alpha_kdl * kdl_loss
+            print(kdl_loss.item(), seg_loss.item())
 
             # measure accuracy and record loss
             losses.update(loss, target.numel())

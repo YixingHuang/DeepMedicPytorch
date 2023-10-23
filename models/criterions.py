@@ -156,3 +156,29 @@ def jvss(y_predict, y_gt, alpha=0.95, eps=0.1, softmax=True, num_classes=2): #al
     # print('vss cost', vss_loss.item(), 'Sensitivity', resultTP.item(), 'Specificity', resultTN.item())
     cost = ce_loss + vss_loss
     return cost
+
+
+def knowledge_distillation_loss(student_output, teacher_output, temperature=2):
+
+    # teacher_output and student_output are the output from the teacher and student models
+    # alpha is the weight for the distillation loss
+    # temperature is the temperature parameter for the distillation
+
+    # Normalize the student's logits
+    # print(student_output.size())
+    student_output -= student_output.max(dim=1, keepdim=True)[0]
+
+    # Normalize the teacher's logits
+    teacher_output -= teacher_output.max(dim=1, keepdim=True)[0]
+    # Calculate the hard target loss (with ground truth labels)
+    # hard_loss = F.cross_entropy(student_output, y)
+
+    # Calculate the soft target loss (with teacher's outputs)
+    # We use the Kullback-Leibler Divergence loss (KLDivLoss)
+    # Note: the teacher's output is detached as we don't want to backpropagate through it
+    soft_loss = F.kl_div(F.log_softmax(student_output/temperature, dim=1),
+                         F.softmax(teacher_output.detach()/temperature, dim=1),
+                         reduction='batchmean')
+
+    # return (1 - alpha) * hard_loss + (alpha * temperature * temperature) * soft_loss
+    return soft_loss
