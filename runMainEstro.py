@@ -148,6 +148,10 @@ cmd452 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_Zurich_Precision_TL -ckpt 
 
 
 cmd460 = 'py  predict.py --gpu 0  --cfg deepmedic_jvssPr_BM -ckpt model_last.tar -folder testLastBraTS'
+
+
+cmd500 = 'py  train.py --gpu 0  --cfg deepmedic_vss_UCSF_Parcellation'
+cmd501 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_UCSF_Parcellation -ckpt model_last.tar'
 # cmds = [cmd10, cmd11, cmd12, cmd13, cmd20, cmd21, cmd22, cmd23, cmd30, cmd31, cmd32, cmd33]
 # cmds = [cmd2, cmd3, cmd12, cmd13]
 # cmds = [cmd100, cmd101, cmd102, cmd103, cmd104, cmd105, cmd106, cmd107]
@@ -160,6 +164,6 @@ cmd460 = 'py  predict.py --gpu 0  --cfg deepmedic_jvssPr_BM -ckpt model_last.tar
 # cmds = [cmd309]
 # cmds = [cmd400, cmd401, cmd402, cmd403, cmd404, cmd405, cmd406, cmd407]
 # cmds = [cmd450, cmd451, cmd452]
-cmds = [cmd460]
+cmds = [cmd501]
 for cmd in cmds:
     os.system(cmd)

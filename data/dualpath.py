@@ -391,8 +391,10 @@ class DualData(Dataset):
         paths, names = [], []
         with open(list_file) as f:
             for line in f:
+                # print('0', line)
                 line = line.strip()
                 name = line.split('\\')[-1] if check_system() == "Windows" else line.split('/')[-1]
+                # print('1', line, name)
                 names.append(name)
                 path = os.path.join(root, line , name + '_')
                 paths.append(path)

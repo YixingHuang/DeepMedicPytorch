@@ -71,10 +71,29 @@ cmd62 = 'py  train.py --gpu 0  --cfg deepmedic_vss_Stanford_Sensitivity'
 cmd63 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_Stanford_Precision'
 cmd64 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_Stanford'
 cmd65 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_Stanford_Sensitivity'
+
+
+cmd100 = 'py  train.py --gpu 0  --cfg deepmedic_vss_BraTS_Precision2'
+cmd101 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_BraTS_Precision2'
+cmd102 = 'py  train.py --gpu 0  --cfg deepmedic_vss_NYU_Precision2'
+cmd103 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_NYU_Precision2'
+
+
+cmd200 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_36_UCSF --ckpt model_last.tar'
+cmd201 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_37_UKER --ckpt model_last.tar'
+cmd202 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_38_Stanford --ckpt model_last.tar'
+cmd203 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_39_NYU --ckpt model_last.tar'
+cmd204 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_40_BraTS --ckpt model_last.tar'
+
+cmd300 = 'py  train.py --gpu 0  --cfg deepmedic_NO_All5Centers'
+cmd301 = 'py  predict.py --gpu 0  --cfg deepmedic_NO_All5Centers  --ckpt model_last.tar'
 # cmds = [cmd30, cmd31, cmd32, cmd33, cmd34, cmd35, cmd36, cmd37, cmd38]
 # cmds = [cmd32, cmd33, cmd34, cmd35, cmd36, cmd37, cmd38, cmd40, cmd41, cmd42, cmd43, cmd44, cmd45, cmd46, cmd47, cmd48]
 # cmds = [cmd40, cmd41, cmd42, cmd43, cmd44, cmd45, cmd46, cmd47, cmd48]
-cmds = [cmd53, cmd54, cmd55]
+# cmds = [cmd53, cmd54, cmd55]
 # cmds = [cmd60, cmd61, cmd62, cmd63, cmd64, cmd65]
+# cmds = [cmd100, cmd101, cmd102, cmd103]
+# cmds = [cmd200, cmd201, cmd202, cmd203, cmd204]
+cmds = [cmd300, cmd301]
 for cmd in cmds:
     os.system(cmd)

@@ -19,3 +19,5 @@ experiments/munet*
 *.txt
 *.zip
 *.7z
+*.nii.gz
+*.nii
