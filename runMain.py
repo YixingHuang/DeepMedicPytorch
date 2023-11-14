@@ -87,6 +87,29 @@ cmd204 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_40_BraTS --ckpt model_last
 
 cmd300 = 'py  train.py --gpu 0  --cfg deepmedic_NO_All5Centers'
 cmd301 = 'py  predict.py --gpu 0  --cfg deepmedic_NO_All5Centers  --ckpt model_last.tar'
+cmd302 = 'py  predict.py --gpu 0  --cfg deepmedic_NO_All5Centers  --ckpt model_last.tar --valid_list testBraTS.txt  --folder testBraTS'
+cmd303 = 'py  predict.py --gpu 0  --cfg deepmedic_NO_All5Centers  --ckpt model_last.tar --valid_list testUCSF.txt  --folder testUCSF'
+cmd304 = 'py  predict.py --gpu 0  --cfg deepmedic_NO_All5Centers  --ckpt model_last.tar --valid_list testNYU.txt  --folder testNYU'
+cmd305 = 'py  predict.py --gpu 0  --cfg deepmedic_NO_All5Centers  --ckpt model_last.tar --valid_list testUKER.txt  --folder testUKER'
+cmd306 = 'py  predict.py --gpu 0  --cfg deepmedic_NO_All5Centers  --ckpt model_last.tar --valid_list testStanford.txt  --folder testStanford'
+
+cmd312 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testBraTS.txt  --folder testBraTS'
+cmd313 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testUCSF.txt  --folder testUCSF'
+cmd314 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testNYU.txt  --folder testNYU'
+cmd315 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testUKER.txt  --folder testUKER'
+cmd316 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testStanford.txt  --folder testStanford'
+
+cmd322 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general  --ckpt model_last.tar --valid_list testBraTS.txt  --folder testBraTS'
+cmd323 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general  --ckpt model_last.tar --valid_list testUCSF.txt  --folder testUCSF'
+cmd324 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general  --ckpt model_last.tar --valid_list testNYU.txt  --folder testNYU'
+cmd325 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general  --ckpt model_last.tar --valid_list testUKER.txt  --folder testUKER'
+cmd326 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general  --ckpt model_last.tar --valid_list testStanford.txt  --folder testStanford'
+
+cmd330 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testBraTS.txt  --folder testBraTS_ModelUCSF'
+cmd331 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testUCSF.txt  --folder testUCSF_ModelUCSF'
+cmd332 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testNYU.txt  --folder testNYU_ModelUCSF'
+cmd333 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testUKER.txt  --folder testUKER_ModelUCSF'
+cmd334 = 'py  predict.py --gpu 0  --cfg deepmedic_CWT_general_LWF  --ckpt model_last.tar --valid_list testStanford.txt  --folder testStanford_ModelUCSF'
 # cmds = [cmd30, cmd31, cmd32, cmd33, cmd34, cmd35, cmd36, cmd37, cmd38]
 # cmds = [cmd32, cmd33, cmd34, cmd35, cmd36, cmd37, cmd38, cmd40, cmd41, cmd42, cmd43, cmd44, cmd45, cmd46, cmd47, cmd48]
 # cmds = [cmd40, cmd41, cmd42, cmd43, cmd44, cmd45, cmd46, cmd47, cmd48]
@@ -94,6 +117,9 @@ cmd301 = 'py  predict.py --gpu 0  --cfg deepmedic_NO_All5Centers  --ckpt model_l
 # cmds = [cmd60, cmd61, cmd62, cmd63, cmd64, cmd65]
 # cmds = [cmd100, cmd101, cmd102, cmd103]
 # cmds = [cmd200, cmd201, cmd202, cmd203, cmd204]
-cmds = [cmd300, cmd301]
+# cmds = [cmd300, cmd301]
+# cmds = [cmd312, cmd313, cmd314, cmd315, cmd316]
+# cmds = [cmd322, cmd323, cmd324, cmd325, cmd326]
+cmds = [cmd330, cmd331, cmd332, cmd333, cmd334]
 for cmd in cmds:
     os.system(cmd)

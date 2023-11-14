@@ -174,7 +174,6 @@ class Parser(AttrDict):
     def getdir(self):
         if 'name' not in self:
             self['name'] = 'testing'
-
         checkpoint_dir = os.path.join(self.train_dir, self.name)
         return checkpoint_dir
 

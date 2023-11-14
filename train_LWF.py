@@ -183,7 +183,8 @@ def main():
             kdl_loss = knowledge_distillation_loss(output, output_teacher, temperature=2)
             seg_loss = criterion(output, target, args.alpha)
             loss = seg_loss + args.alpha_kdl * kdl_loss
-            print(kdl_loss.item(), seg_loss.item())
+            if i % 500 == 0:
+                print(kdl_loss.item(), seg_loss.item())
 
             # measure accuracy and record loss
             losses.update(loss, target.numel())

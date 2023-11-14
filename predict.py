@@ -228,6 +228,7 @@ if __name__ == '__main__':
     parser.add_argument('-gpu', '--gpu', default='0', type=str)
     parser.add_argument('-ckpt', '--ckpt', default='model_best.tar', type=str)
     parser.add_argument('-folder', '--folder', default='test', type=str)
+    parser.add_argument('-valid_list', '--valid_list', default='test.txt', type=str)
     args = parser.parse_args()
     args = Parser(args.cfg, log='test').add_args(args)
 
@@ -235,7 +236,7 @@ if __name__ == '__main__':
     #args.saving = False
     # args.data_dir = 'C:/Data/MICCAI_BraTS_2018_Data_Validation'
     #args.data_dir = '/usr/data/pkao/brats2018/testing'
-    args.valid_list = 'test.txt'
+    # args.valid_list = 'test.txt'
     args.saving = True
 
     # args.ckpt = 'model_last.tar'

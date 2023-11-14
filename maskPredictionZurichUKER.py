@@ -31,7 +31,7 @@ def applyMask(nii_path, seg_path, save_seg_path, seg_ref_name, seg_ref_name_new)
 
 def main():
     search = 'C:/Data/UKER_BM_Channel1'
-    target = 'C:/MachineLearning/DeepMedicPytorch/output/deepmedic_vss_Zurich_Precision_TL/test150UKER'
+    target = 'C:/MachineLearning/DeepMedicPytorch/output/deepmedic_vss_Zurich_Precision/testUKER'
 
     directories =get_directories(search)
     total_num = len(directories)

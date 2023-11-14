@@ -158,7 +158,7 @@ def jvss(y_predict, y_gt, alpha=0.95, eps=0.1, softmax=True, num_classes=2): #al
     return cost
 
 
-def knowledge_distillation_loss(student_output, teacher_output, temperature=2):
+def knowledge_distillation_loss(student_output0, teacher_output, temperature=2):
 
     # teacher_output and student_output are the output from the teacher and student models
     # alpha is the weight for the distillation loss
@@ -166,7 +166,8 @@ def knowledge_distillation_loss(student_output, teacher_output, temperature=2):
 
     # Normalize the student's logits
     # print(student_output.size())
-    student_output -= student_output.max(dim=1, keepdim=True)[0]
+    #student_output - = student_output0.max(dim=1, keepdim=True)[0]
+    student_output = student_output0 - student_output0.max(dim=1, keepdim=True)[0]
 
     # Normalize the teacher's logits
     teacher_output -= teacher_output.max(dim=1, keepdim=True)[0]

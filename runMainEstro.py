@@ -152,6 +152,31 @@ cmd460 = 'py  predict.py --gpu 0  --cfg deepmedic_jvssPr_BM -ckpt model_last.tar
 
 cmd500 = 'py  train.py --gpu 0  --cfg deepmedic_vss_UCSF_Parcellation'
 cmd501 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_UCSF_Parcellation -ckpt model_last.tar'
+
+
+cmd600 = 'py  train_LWF.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_LWF'
+cmd601 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_LWF -ckpt model_last.tar -folder testUKER'
+cmd602 = 'py  train.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_TL'
+cmd603 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_TL -ckpt model_last.tar -folder testUKER'
+cmd604 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_LWF -ckpt model_last.tar -folder test'
+cmd605 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_TL -ckpt model_last.tar -folder test'
+cmd620 = 'py  train_LWF.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_LWF2'
+cmd621 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_LWF2 -ckpt model_last.tar -folder test'
+cmd622 = 'py  train_LWF.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_LWF3'
+cmd623 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_LWF3 -ckpt model_last.tar -folder test'
+cmd624 = 'py  train_LWF.py --gpu 0  --cfg deepmedic_ESTRO_UCSF_LWF3'
+
+cmd606 = 'py  predict.py --gpu 0  --cfg deepmedic_jvssPr_BM -ckpt model_last.tar -folder testLastUCSF'
+
+cmd610 = 'py  train_LWF.py --gpu 0  --cfg deepmedic_ESTRO_NYU_LWF'
+cmd611 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_NYU_LWF -ckpt model_last.tar -folder testUKER'
+cmd612 = 'py  train.py --gpu 0  --cfg deepmedic_ESTRO_NYU_TL'
+cmd613 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_NYU_TL -ckpt model_last.tar -folder testUKER'
+cmd614 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_NYU_LWF -ckpt model_last.tar -folder test'
+cmd615 = 'py  predict.py --gpu 0  --cfg deepmedic_ESTRO_NYU_TL -ckpt model_last.tar -folder test'
+
+cmd616 = 'py  predict.py --gpu 0  --cfg deepmedic_jvssPr_BM -ckpt model_last.tar -folder testLastNYU'
+cmd617 = 'py  predict.py --gpu 0  --cfg deepmedic_jvssPr_BM -ckpt model_last.tar -folder testLastStanford'
 # cmds = [cmd10, cmd11, cmd12, cmd13, cmd20, cmd21, cmd22, cmd23, cmd30, cmd31, cmd32, cmd33]
 # cmds = [cmd2, cmd3, cmd12, cmd13]
 # cmds = [cmd100, cmd101, cmd102, cmd103, cmd104, cmd105, cmd106, cmd107]
@@ -164,6 +189,10 @@ cmd501 = 'py  predict.py --gpu 0  --cfg deepmedic_vss_UCSF_Parcellation -ckpt mo
 # cmds = [cmd309]
 # cmds = [cmd400, cmd401, cmd402, cmd403, cmd404, cmd405, cmd406, cmd407]
 # cmds = [cmd450, cmd451, cmd452]
-cmds = [cmd501]
+# cmds = [cmd600, cmd601, cmd602, cmd603]
+# cmds = [cmd610, cmd611, cmd612, cmd613]
+# cmds = [cmd614, cmd615]
+# cmds = [cmd620, cmd621, cmd622, cmd623]
+cmds = [cmd624]
 for cmd in cmds:
     os.system(cmd)
