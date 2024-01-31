@@ -39,10 +39,10 @@ def get_dist2center(patch_shape):
 def process(path, has_label=True, n_channels=1):
     print(path)
     label = np.array(
-            nib_load(path[:-1] + '-seg_ce_ud.nii.gz'), dtype='float32', order='C')
+            nib_load(path[:-1] + '-seg_ce.nii.gz'), dtype='float32', order='C')
 
     images = np.stack([
-        np.array(nib_load(path[:-1] + '-t1c_bias_norm_ud.nii.gz'), dtype='float32', order='C')
+        np.array(nib_load(path[:-1] + '-t1c_bias_norm.nii.gz'), dtype='float32', order='C')
         for modal in modalities], -1)
 
     # print('strides', images.strides)
@@ -122,7 +122,9 @@ def process(path, has_label=True, n_channels=1):
 
         fg = np.stack(fg.nonzero()).T.astype('uint8')
         bg = np.stack(bg.nonzero()).T.astype('uint8')
-
+        print(fg.shape[0])
+        if fg.shape[0] < 10:
+            print('HYX', path)
         suffix = '{}x{}x{}_'.format(*patch_shape)
 
         output = path + suffix + 'coords.pkl'
@@ -144,8 +146,8 @@ def doit(dset):
         process(path, has_label, n_channels=len(modalities))
 
 
-args.data_dir = 'C:/Data/NYU_Release2'
-args.test_data_dir = 'C:/Data/NYU_Release2'
+args.data_dir = 'C:/Data/NYU_Release2_reg_norm'
+args.test_data_dir = 'C:/Data/NYU_Release2_reg_norm'
 
 print(args.data_dir)
 # train

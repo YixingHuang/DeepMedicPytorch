@@ -43,14 +43,7 @@ class DeepMedic(nn.Module):
         #n1, n2, n3 = 30, 40, 50
 
         n = 2*n3
-        self.start1 = nn.Sequential(
-                conv3x3(c, n1),
-                # conv3x3(n1, n1)
-            )
-        self.start2 = nn.Sequential(
-                conv3x3(c, n1),
-                # conv3x3(n1, n1)
-            )
+
         self.branch1 = nn.Sequential(
                 conv3x3(c, n1),
                 conv3x3(n1, n1),

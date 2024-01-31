@@ -43,7 +43,7 @@ def process(path, has_label=True, n_channels=1):
             nib_load(path[:-1] + '-seg_ce.nii.gz'), dtype='float32', order='C')
 
     images = np.stack([
-        np.array(nib_load(path[:-1] + '_normed_registered_n4.nii.gz'), dtype='float32', order='C')
+        np.array(nib_load(path[:-1] + '_bias_reg_norm.nii.gz'), dtype='float32', order='C')
         for modal in modalities], -1)
 
     # print('strides', images.strides)

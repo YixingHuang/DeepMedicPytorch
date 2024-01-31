@@ -180,8 +180,8 @@ def main():
             # compute output
             output = model((x1, x2)) # output nx5x9x9x9, target nx9x9x9
             output_teacher = model_teacher((x1, x2))
-            kdl_loss = knowledge_distillation_loss(output, output_teacher, temperature=2)
             seg_loss = criterion(output, target, args.alpha)
+            kdl_loss = knowledge_distillation_loss(output, output_teacher, temperature=2)
             loss = seg_loss + args.alpha_kdl * kdl_loss
             if i % 500 == 0:
                 print(kdl_loss.item(), seg_loss.item())

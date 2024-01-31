@@ -121,9 +121,10 @@ def process(path, has_label=True, n_channels=1):
         fg = fg * maps
         bg = bg * maps
 
+
         fg = np.stack(fg.nonzero()).T.astype('uint8')
         bg = np.stack(bg.nonzero()).T.astype('uint8')
-
+        print(fg.shape[0])
         suffix = '{}x{}x{}_'.format(*patch_shape)
 
         output = path + suffix + 'coords.pkl'
@@ -145,8 +146,8 @@ def doit(dset):
         process(path, has_label, n_channels=len(modalities))
 
 
-args.data_dir = 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TRAIN_resample'
-args.test_data_dir = 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_resample'
+args.data_dir = 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_reg_norm'
+args.test_data_dir = 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_reg_norm'
 
 print(args.data_dir)
 # train
@@ -176,9 +177,9 @@ test_set = {
         }
 
 # docker
-# doit(train_set)
+doit(train_set)
 doit(val_set)
-# doit(test_set)
+doit(test_set)
 # doit(train2_set)
 
 # benchmarking the data reading

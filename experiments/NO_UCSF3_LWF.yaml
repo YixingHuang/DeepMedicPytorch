@@ -1,0 +1,58 @@
+net: DeepMedic
+net_params:
+  c: 1
+  n1: 30
+  n2: 40
+  n3: 50
+  m: 150
+  cout: 2
+criterion: jvss
+alpha: 0.5
+dataset: DualData
+seed: 2001
+gpu: 0
+batch_size:  100 # load 50 cases (one subepoch)
+num_patches: 20 # extract 30 patches for each case
+mini_batch_size: 50 # for one update: originally batchSizeTrain = 10
+num_epochs: 150  # originally: 35E * 20SubE * 50Cases /227 = 160
+save_freq: 50    # save every 50 epochs
+valid_freq: 500   # validate every 10 epochs
+valid_freq_new: 500 # Valid more frequently after num_epochs_valid_change epochs
+num_epochs_valid_change: 500 # Valid more frequently after num_epochs_valid_change epochs
+start_iter: 0
+opt: Adam
+opt_params:
+  lr: 0.001
+  #momentum: 0.9
+  weight_decay: 0.0001
+  amsgrad: true
+#opt: SGD
+#opt_params:
+#  lr: 0.01
+#  momentum: 0.9
+#  weight_decay: 0.0001
+workers: 32
+#schedule: {60, 120} # original for 160 epochs
+schedule: {150, 250} # based on epochs
+#data settings
+train_list: train.txt
+train_transforms: # for training, applied to both data and labels
+  TensorType((torch.float32, torch.float32, torch.int64))
+test_transforms: # for training, applied to both data and labels
+  TensorType((torch.float32, torch.int64))
+
+valid_list: val.txt
+resume: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_train_ckpts/deepmedic_jvssPr_BM/model_last.tar
+alpha_kdl: 0.1
+
+root: C:/MachineLearning/DeepMedicPytorch/
+# The location to store the training data
+data_dir: C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_resample
+# The location to store the validation data
+#test_data_dir: C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_resample
+test_data_dir: C:/Data
+#test_data_dir: C:/Data/UKER_BM_Channel1
+# The location to save the testing data
+#test_data_dir: /usr/data/pkao/brats2018/testing
+# The location to save the trained models
+train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/NO_Bilateral

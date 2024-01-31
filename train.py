@@ -117,15 +117,15 @@ def main():
             collate_fn=valid_set.collate,
             num_workers=4, pin_memory=True)
 
-        train_valid_set = Dataset(train_list, root=args.data_dir,
-                for_train=False, crop=False,
-                transforms=args.test_transforms,
-                sample_size=args.sample_size, sub_sample_size=args.sub_sample_size,
-                target_size=args.target_size)
-        train_valid_loader = DataLoader(
-            train_valid_set, batch_size=1, shuffle=False,
-            collate_fn=train_valid_set.collate,
-            num_workers=4, pin_memory=True)
+        # train_valid_set = Dataset(train_list, root=args.data_dir,
+        #         for_train=False, crop=False,
+        #         transforms=args.test_transforms,
+        #         sample_size=args.sample_size, sub_sample_size=args.sub_sample_size,
+        #         target_size=args.target_size)
+        # train_valid_loader = DataLoader(
+        #     train_valid_set, batch_size=1, shuffle=False,
+        #     collate_fn=train_valid_set.collate,
+        #     num_workers=4, pin_memory=True)
 
     start = time.time()
 
@@ -133,7 +133,7 @@ def main():
     args.schedule = {int(k*enum_batches): v for k, v in args.schedule.items()}
     args.save_freq = int(enum_batches * args.save_freq)
     args.valid_freq = int(enum_batches * args.valid_freq)
-
+    # print('HYX', args.valid_freq, enum_batches, args.valid_freq)
     losses = AverageMeter()
     torch.set_grad_enabled(True)
 
@@ -181,6 +181,7 @@ def main():
         # print('iteration time: ', t_ii - t_i)
         if (i + 1) == num_iters_valid_change:
             args.valid_freq = int(enum_batches * args.valid_freq_new)
+        # print('HYXHYX', i, args.valid_freq, (i + 1) % args.valid_freq)
         if (i + 1) % args.valid_freq == 0:
             logging.info('-' * 50)
             msg = 'Iter {}, Epoch {:.4f}, {}'.format(i, i / enum_batches, 'validation')

@@ -1,0 +1,47 @@
+alpha: 0.5
+alpha_kdl: 0.1
+batch_size: 16
+cfg: NO_UCSF4_LWF2
+criterion: jvss
+data_dir: C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_reg_norm
+dataset: DualData
+gpu: '0'
+mini_batch_size: 4
+name: NO_UCSF4_LWF2
+net: DeepMedic
+net_params:
+  c: 1
+  cout: 2
+  m: 150
+  n1: 30
+  n2: 40
+  n3: 50
+num_epochs: 300
+num_epochs_valid_change: 500
+num_patches: 2
+opt: Adam
+opt_params:
+  amsgrad: true
+  lr: 0.001
+  weight_decay: 0.0001
+out: ''
+resume: C:/MachineLearning/DeepMedicPytorch/Yixing/BM_train_ckpts/deepmedic_jvssPr_BM/model_last.tar
+root: C:/MachineLearning/DeepMedicPytorch/
+sample_size: 25
+save_freq: 50
+schedule:
+  150: null
+  250: null
+seed: 2001
+start_iter: 0
+sub_sample_size: 19
+target_size: 9
+test_data_dir: C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_reg_norm
+test_transforms: TensorType((torch.float32, torch.int64))
+train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/NO_Bilateral
+train_list: train.txt
+train_transforms: TensorType((torch.float32, torch.float32, torch.int64))
+valid_freq: 500
+valid_freq_new: 500
+valid_list: val.txt
+workers: 32

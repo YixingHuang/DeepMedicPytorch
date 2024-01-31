@@ -143,7 +143,8 @@ def doit(dset):
     for path in paths:
         process(path, has_label, n_channels=len(modalities))
 
-
+args.data_dir = 'C:/Data/NYU_Release2_reg_norm'
+args.test_data_dir = 'C:/Data/NYU_Release2_reg_norm'
 print(args.data_dir)
 # train
 train_set = {
