@@ -68,10 +68,15 @@ cmd641 = 'py  predict.py --gpu 0  --cfg NO_NYU_regnorm5 --ckpt model_last.tar --
 cmd642 = 'py  predict.py --gpu 0  --cfg NO_NYU_regnorm5 --ckpt model_last.tar --folder testNYU --valid_list testNYU.txt'
 
 
-cmds = [cmd503, cmd504, cmd505, cmd550, cmd551, cmd552, cmd600, cmd601, cmd602,
-        cmd513, cmd514, cmd515, cmd553, cmd554, cmd555, cmd610, cmd611, cmd612,
-        cmd523, cmd524, cmd525, cmd556, cmd557, cmd558, cmd620, cmd621, cmd622,
-        cmd533, cmd534, cmd535, cmd559, cmd560, cmd561, cmd630, cmd631, cmd632,
-        cmd543, cmd544, cmd545, cmd562, cmd563, cmd564, cmd640, cmd641, cmd642]
+# cmds = [cmd503, cmd504, cmd505, cmd550, cmd551, cmd552, cmd600, cmd601, cmd602,
+#         cmd513, cmd514, cmd515, cmd553, cmd554, cmd555, cmd610, cmd611, cmd612,
+#         cmd523, cmd524, cmd525, cmd556, cmd557, cmd558, cmd620, cmd621, cmd622,
+#         cmd533, cmd534, cmd535, cmd559, cmd560, cmd561, cmd630, cmd631, cmd632,
+#         cmd543, cmd544, cmd545, cmd562, cmd563, cmd564, cmd640, cmd641, cmd642]
+cmds = [cmd504, cmd505,  cmd551, cmd552,  cmd601, cmd602,
+         cmd514, cmd515,  cmd554, cmd555,  cmd611, cmd612,
+         cmd524, cmd525,  cmd557, cmd558,  cmd621, cmd622,
+         cmd534, cmd535,  cmd560, cmd561,  cmd631, cmd632,
+         cmd544, cmd545,  cmd563, cmd564,  cmd641, cmd642]
 for cmd in cmds:
     os.system(cmd)

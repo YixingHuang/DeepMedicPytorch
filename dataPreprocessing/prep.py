@@ -139,6 +139,9 @@ def doit(dset):
         process(path, has_label)
 
 
+args.data_dir = 'C:/Data/MICCAI_BraTS_2018_Data_Training'
+args.test_data_dir = 'C:/Data/MICCAI_BraTS_2018_Data_Validation'
+
 print(args.data_dir)
 # train
 train_set = {
@@ -150,7 +153,7 @@ train_set = {
 
 # test/validation data
 test_set = {
-        'root': args.test_data_dir, #'/home/thuyen/Data/brats17/Brats17ValidationData',
+        'root': args.test_data_dir,
         'flist': 'test.txt',
         'has_label': False
         }
@@ -158,38 +161,4 @@ test_set = {
 # docker
 doit(train_set)
 doit(test_set)
-
-# benchmarking the data reading
-# load f32 is faster (0.2s) than load i16 (0.7s)
-#def pkload_i16(fname):
-#    with open(fname, 'rb') as f:
-#        images, mask, mean, std, label = pickle.load(f)
-#
-#    images = images.astype('float32')
-#    for c in range(4):
-#        x = images[..., c]
-#        x[mask] -= mean[c]
-#        x[mask] /= std[c]
-#        images[..., c] = x
-#
-#    return images, label
-#
-#def pkload(fname):
-#    with open(fname, 'rb') as f:
-#        return pickle.load(f)
-#
-#fname = '/home/thuyen/FastData/data_f32.pkl'
-#fname = '/home/thuyen/FastData/data_i16.pkl'
-#
-#start = time.time()
-##x = pkload_i16(fname)
-#x = pkload(fname)
-#print(time.time() - start)
-
-
-#path = '/media/ssd1/thuyen/Brats17TrainingData/LGG/Brats17_2013_0_1/Brats17_2013_0_1_'
-#a2, b2 = process(path, True)
-#a1, b1 = pickle.load(open('/home/thuyen/Brats17_2013_0_1_data_f32.pkl', 'rb'))
-#x = np.abs(a2-a1)
-#print(x.max())
 

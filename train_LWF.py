@@ -198,7 +198,7 @@ def main():
         # print('iteration time: ', t_ii - t_i)
         if (i + 1) == num_iters_valid_change:
             args.valid_freq = int(enum_batches * args.valid_freq_new)
-        if (i + 1) % args.valid_freq == 0:
+        if args.valid_list and (i + 1) % args.valid_freq == 0:
             logging.info('-' * 50)
             msg = 'Iter {}, Epoch {:.4f}, {}'.format(i, i / enum_batches, 'validation')
             logging.info(msg)

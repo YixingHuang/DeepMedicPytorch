@@ -3,26 +3,26 @@ import configparser
 
 os.environ['CUDA_VISIBLE_DEVICES'] = "1"
 
-session_name = 'SWT_UKERlast'
-total_num_iters = 1
-total_num_centers = 5
-num_epochs_per_center = 300
+session_name = 'CWT3'
+total_num_iters = 50
+total_num_centers = 3
+num_epochs_per_center = 2
 episode = 'deepmedic_CWT_general'
 config_file_name = './experiments/' + episode + '.yaml'
 # center_IDs = ['UKER', 'UCSF', 'Stanford', 'BraTS', 'NYU']
-center_IDs = ['UCSF', 'Stanford', 'BraTS', 'NYU', 'UKER']
-
-train_data_dir = {'NYU': 'C:/Data/NYU_Release2',
-                  'UKER': 'C:/Data/UKER_BM_Channel1',
+# center_IDs = ['UCSF', 'Stanford', 'BraTS', 'NYU', 'UKER']
+center_IDs = ['UKER', 'UCSF', 'Stanford']
+train_data_dir = {'NYU': 'C:/Data/NYU_Release2_reg_norm',
+                  'UKER': 'C:/Data/UKER_BM_Reg_Norm',
                   'Stanford': 'C:/Data/StanfordMetShare',
-                  'UCSF': 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TRAIN_resample',
-                  'BraTS': 'C:/Data/ASNR-MICCAI-BraTS2023-MET-Challenge-TrainingData_combined'
+                  'UCSF': 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_reg_norm',
+                  'BraTS': 'C:/Data/BraTS2023Met_RegNorm'
                   }
-test_data_dir = {'NYU': 'C:/Data/NYU_Release2',
-                  'UKER': 'C:/Data/UKER_BM_Channel1',
-                  'Stanford': 'C:/Data/StanfordMetShare',
-                  'UCSF': 'C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_resample',
-                  'BraTS': 'C:/Data/ASNR-MICCAI-BraTS2023-MET-Challenge-TrainingData_combined'
+test_data_dir = {'NYU': 'C:/Data',
+                  'UKER': 'C:/Data',
+                  'Stanford': 'C:/Data',
+                  'UCSF': 'C:/Data',
+                  'BraTS': 'C:/Data'
                   }
 test_data_list= {'NYU': 'testNYU.txt',
                   'UKER': 'testUKER.txt',
@@ -52,8 +52,8 @@ main_model_folder = 'C:/MachineLearning/DeepMedicPytorch/' + session_name + '_mo
 initial_model = 'C:/MachineLearning/DeepMedicPytorch/Yixing/BM_shuffle_ckpts_UCSF/deepmedic_vss_UCSF_Precision/model_best.tar'
 for iter in range(0, total_num_iters):
     for center_idx in range(0, total_num_centers):
-        if iter == 0 and (center_idx == 0):
-            continue
+        # if iter == 0 and (center_idx == 0):
+        #     continue
         # the situation that center_idx = 0
         pre_center_name = center_IDs[(center_idx + total_num_centers - 1) % total_num_centers]
         pre_model_iter = iter if center_idx > 0 else iter - 1
@@ -75,16 +75,16 @@ for iter in range(0, total_num_iters):
         else:
             config.set('default', option='num_patches', value='20')
 
-        if iter == 0 and center_idx == 1:
-            config.set('default', option='resume', value=initial_model)
-            print(initial_model)
+        # if iter == 0 and center_idx == 1:
+        #     config.set('default', option='resume', value=initial_model)
+        #     print(initial_model)
+        # else:
+        resume_path = main_model_folder + model_pre_session_name + '/' + episode + '/model_last.tar'
+        print(resume_path)
+        if os.path.isfile(resume_path):
+            config.set('default', option='resume', value=resume_path)
         else:
-            resume_path = main_model_folder + model_pre_session_name + '/' + episode + '/model_last.tar'
-            print(resume_path)
-            if os.path.isfile(resume_path):
-                config.set('default', option='resume', value=resume_path)
-            else:
-                print("=> no checkpoint found at '{}'".format(resume_path))
+            print("=> no checkpoint found at '{}'".format(resume_path))
 
         configfile = open(config_file_name, 'w')
         config.write(configfile)
@@ -114,8 +114,15 @@ for iter in range(0, total_num_iters):
         configfile = open(config_file_name, 'w')
         configfile.write(newstring)
         configfile.close()
-        for test_center_idx in range(0, total_num_centers):
-            test_cmd = test_cmd_partial + '--folder test' + center_IDs[center_idx] + 'Model' \
-                       + center_IDs[test_center_idx] + '_' + session_name + '_iter' + str(iter) + ' --valid_list ' + test_data_list[center_IDs[test_center_idx]]
-            os.system(test_cmd)
+        if iter == total_num_iters - 1: #last iteration
+            if center_idx == total_num_centers - 1: #the last training, test on all centers
+                for test_center_idx in range(0, total_num_centers):
+                    test_cmd = test_cmd_partial + '--folder test' + center_IDs[center_idx] + 'Model' \
+                               + center_IDs[test_center_idx] + '_' + session_name + '_iter' + str(iter) + ' --valid_list ' + test_data_list[center_IDs[test_center_idx]]
+                    os.system(test_cmd)
+                else: #test only on the/one training center
+                    test_cmd = test_cmd_partial + '--folder test' + center_IDs[center_idx] + 'Model' \
+                               + center_IDs[center_idx] + '_' + session_name + '_iter' + str(
+                        iter) + ' --valid_list ' + test_data_list[center_IDs[center_idx]]
+                    os.system(test_cmd)
 

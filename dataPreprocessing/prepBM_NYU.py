@@ -165,13 +165,13 @@ train2_set = {
 ####
 
 val_set = {
-        'root': args.test_data_dir, #'/home/thuyen/Data/brats17/Brats17ValidationData',
+        'root': args.test_data_dir,
         'flist': 'val.txt',
         'has_label': True
         }
 # test/validation data
 test_set = {
-        'root': args.test_data_dir, #'/home/thuyen/Data/brats17/Brats17ValidationData',
+        'root': args.test_data_dir,
         'flist': 'test.txt',
         'has_label': True
         }
