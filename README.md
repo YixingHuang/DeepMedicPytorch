@@ -17,7 +17,7 @@ An in-depth technical/experimental survey paper of Incremental Transfer Learning
 
 [1] Huang, Yixing, et al. "A Survey of Incremental Transfer Learning: Combining Peer-to-Peer Federated Learning and Domain Incremental Learning for Multicenter Collaboration." arXiv preprint arXiv:2309.17192 (2023).
 
-Prior brain metastases autosegmentation paper: [[Medical Physics paper](https://doi.org/10.1002/mp.15863)] [[Implementation](https://github.com/YixingHuang/DeepMedicPlus)]:
+Prior brain metastases autosegmentation paper: [[paper](https://doi.org/10.1002/mp.15863)] [[Implementation](https://github.com/YixingHuang/DeepMedicPlus)]:
 
 [2]Huang, Yixing, et al. "Deep learning for brain metastasis detection and segmentation in longitudinal MRI data." Medical Physics 49.9 (2022): 5773-5786.
 ## Instructions
