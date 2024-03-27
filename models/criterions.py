@@ -90,6 +90,16 @@ def dice(output, target):
     return 1.0 - num/den
 
 
+def dice_coefficient(pred, target, epsilon=1):
+    print(pred.shape)
+    dims = (2,3,4)
+    intersection = torch.sum(pred * target, dim=dims)
+    union = torch.sum(pred, dim=dims) + torch.sum(target, dim=dims)
+    dice = (2. * intersection + epsilon) / (union + epsilon)
+    dice = torch.sum(dice)/(pred.shape[0] * pred.shape[1])
+
+    return dice
+
 def cross_entropy_dice(output, target, weight=1.0):
     loss = weight * F.cross_entropy(output, target)
     output = F.softmax(output, dim=1)

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/DeepMedicPytorch.iml" filepath="$PROJECT_DIR$/.idea/DeepMedicPytorch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/DeepMedicPytorchClean.iml" filepath="$PROJECT_DIR$/.idea/DeepMedicPytorchClean.iml" />
     </modules>
   </component>
 </project>

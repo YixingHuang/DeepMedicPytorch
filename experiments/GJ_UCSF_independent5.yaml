@@ -9,7 +9,7 @@ net_params:
 criterion: jvss
 alpha: 0.5
 dataset: DualData
-seed: 2001
+seed: 2006
 gpu: 0
 batch_size:  100 # load 50 cases (one subepoch)
 num_patches: 10 # extract 30 patches for each case

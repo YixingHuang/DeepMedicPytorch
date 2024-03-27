@@ -189,6 +189,115 @@ def validate(valid_loader, model, batch_size,
 
     if scoring:
         msg = 'Average scores: '
+        print(keys, vals.avg)
+        msg += ', '.join(['{}: {:.4f}'.format(k, v) for k, v in zip(keys, vals.avg)])
+        logging.info(msg)
+        log_val_name = os.path.join(ckpts, 'log_val.txt')
+        val_log_file = open(log_val_name, 'a')
+        msg_val = ' '.join(['{:.4f}, '.format(v) for v in vals.avg])+'\n'
+        val_log_file.write(msg_val)
+        val_log_file.close()
+
+    model.train()
+    return vals.avg
+
+
+def validate2(valid_loader, model, batch_size,
+        out_dir='', names=None, scoring=True, verbose=True, cout=5, ckpts=''):
+
+    H, W, T = 240, 240, 155
+
+    dset = valid_loader.dataset
+    names = dset.names
+    h, w, t = dset.shape; h, w, t = int(h), int(w), int(t)
+    sample_size = dset.sample_size
+    sub_sample_size = dset.sub_sample_size
+    target_size = dset.target_size
+    dtype = torch.float32
+
+    model.eval()
+    criterion = F.cross_entropy
+
+    vals = AverageMeter()
+    for i, (data, labels) in enumerate(valid_loader):
+
+        y = labels.cuda(non_blocking=True)
+        data = [t.cuda(non_blocking=True) for t in data]
+        x, coords = data[:2]
+
+        if len(data) > 2: # has mask
+            x = add_mask(x, data.pop(), 0)
+
+        outputs = torch.zeros((cout, h*w*t, target_size, target_size, target_size), dtype=dtype)
+        #targets = torch.zeros((h*w*t, 9, 9, 9), dtype=torch.uint8)
+
+        sample_loss = AverageMeter() if scoring and criterion is not None else None
+
+        for b, coord in enumerate(coords.split(batch_size)):
+            x1 = multicrop.crop3d_gpu(x, coord, sample_size, sample_size, sample_size, 1, True)
+            x2 = multicrop.crop3d_gpu(x, coord, sub_sample_size, sub_sample_size, sub_sample_size, 3, True)
+
+            if scoring:
+                target = multicrop.crop3d_gpu(y, coord, target_size, target_size, target_size, 1, True)
+
+            # compute output
+            logit = model((x1, x2)) # nx5x9x9x9, target nx9x9x9
+            output = F.softmax(logit, dim=1)
+
+            # copy output
+            start = b*batch_size
+            end = start + output.shape[0]
+            outputs[:, start:end] = output.permute(1, 0, 2, 3, 4).cpu()
+
+            #targets[start:end] = target.type(dtype).cpu()
+
+            # measure accuracy and record loss
+            if scoring and criterion is not None:
+                loss = criterion(logit, target)
+                sample_loss.update(loss.item(), target.size(0))
+
+        outputs = outputs.view(cout, h, w, t, 9, 9, 9).permute(0, 1, 4, 2, 5, 3, 6)
+        outputs = outputs.reshape(cout, h*9, w*9, t*9)
+        outputs = outputs[:, :H, :W, :T].numpy()
+
+        #targets = targets.view(h, w, t, 9, 9, 9).permute(0, 3, 1, 4, 2, 5).reshape(h*9, w*9, t*9)
+        #targets = targets[:H, :W, :T].numpy()
+
+        msg = 'Subject {}/{}, '.format(i+1, len(valid_loader))
+        name = str(i)
+        if names:
+            name = names[i]
+            msg += '{:>20}, '.format(name)
+
+        if out_dir:
+            # np.save(os.path.join(out_dir, name + '_preds'), outputs)
+            # print(outputs.shape) # (2, 240, 240, 155)
+            # for channel in range(outputs.shape[0]):
+            #     img_nifti = nib.Nifti1Image(outputs[channel], np.eye(4))
+            #     save_name = os.path.join(out_dir, name + '_preds_' + str(channel) + '.nii.gz')
+            #     nib.save(img_nifti, save_name)
+            binary = (outputs[1] > 0.5).astype(np.float32)
+            img_nifti = nib.Nifti1Image(binary, np.eye(4))
+            save_name = os.path.join(out_dir, name + '_Segm.nii.gz')
+            nib.save(img_nifti, save_name)
+
+        if scoring:
+            labels  = labels.numpy()
+            outputs = outputs.argmax(0)
+            scores = dice(outputs, labels)
+
+            #if criterion is not None:
+            #    scores += sample_loss.avg,
+
+            vals.update(np.array(scores))
+
+            msg += ', '.join(['{}: {:.4f}'.format(k, v) for k, v in zip(keys, scores)])
+
+        if verbose:
+            logging.info(msg)
+
+    if scoring:
+        msg = 'Average scores: '
         msg += ', '.join(['{}: {:.4f}'.format(k, v) for k, v in zip(keys, vals.avg)])
         logging.info(msg)
         log_val_name = os.path.join(ckpts, 'log_val.txt')

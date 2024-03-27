@@ -4,7 +4,6 @@ tmp
 build
 *.egg-info
 *.so
-*.png
 *.sh
 output
 submissions

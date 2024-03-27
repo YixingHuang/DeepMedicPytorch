@@ -155,15 +155,6 @@ def main():
     best_val = 0
 
     for i, (data, label) in enumerate(train_loader, args.start_iter):
-        # # validation
-        # if args.valid_list and  (i % args.valid_freq) == 0:
-        #    logging.info('-'*50)
-        #    msg  =  'Iter {}, Epoch {:.4f}, {}'.format(i, i/enum_batches, 'validation')
-        #    logging.info(msg)
-        #    with torch.no_grad():
-        #        validate(valid_loader, model, batch_size=args.mini_batch_size, names=valid_set.names)
-        # actual training
-        # t_i = time.time()
 
         adjust_learning_rate(optimizer, i)
         # with torch.autograd.profiler.profile() as prof:

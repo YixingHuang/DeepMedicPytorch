@@ -9,17 +9,16 @@ net_params:
 criterion: jvss
 alpha: 0.5
 dataset: DualData
-seed: 2001
+seed: 40
 gpu: 0
 batch_size:  100 # load 50 cases (one subepoch)
 num_patches: 10 # extract 30 patches for each case
 mini_batch_size: 50 # for one update: originally batchSizeTrain = 10
 num_epochs: 300  # originally: 35E * 20SubE * 50Cases /227 = 160
 save_freq: 50    # save every 50 epochs
-valid_freq: 2  # validate every 10 epochs
-valid_freq_new: 500 # Valid more frequently after num_epochs_valid_change epochs
-num_epochs_valid_change: 500 # Valid more frequently after num_epochs_valid_change epochs
-
+valid_freq: 300   # validate every 10 epochs
+valid_freq_new: 2 # Valid more frequently after num_epochs_valid_change epochs
+num_epochs_valid_change: 300 # Valid more frequently after num_epochs_valid_change epochs
 start_iter: 0
 opt: Adam
 opt_params:
@@ -42,15 +41,15 @@ train_transforms: # for training, applied to both data and labels
 test_transforms: # for training, applied to both data and labels
   TensorType((torch.float32, torch.int64))
 
-#valid_list: val.txt
-#resume: C:/MachineLearning/DeepMedicPytorch/Yixing/NO/NO_UKER/model_last.tar
-alpha_kdl: 0.1
+valid_list: val.txt
+
+
 
 root: C:/MachineLearning/DeepMedicPytorch/
 # The location to store the training data
-data_dir: C:/Data/UCSF_BrainMetastases_v1.2/UCSF_BM_TEST_reg_norm
-
-# The location to save the testing data
+data_dir: C:/Data/UKER_BM_Reg_Norm
+# The location to store the validation data
 test_data_dir: C:/Data
+
 # The location to save the trained models
 train_dir: C:/MachineLearning/DeepMedicPytorch/Yixing/GJ

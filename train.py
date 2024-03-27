@@ -168,7 +168,8 @@ def main():
             # compute output
             output = model((x1, x2)) # output nx5x9x9x9, target nx9x9x9
             loss = criterion(output, target, args.alpha)
-
+            # if i % 500 == 0:
+            #     print(loss.item())
             # measure accuracy and record loss
             losses.update(loss, target.numel())
 
