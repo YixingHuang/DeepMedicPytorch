@@ -13,7 +13,7 @@ The official Tensorflow version of DeepMedic for our prior [Medical Physics pape
 The manuscript is currently under review of the Green Journal.
 
 Related work:
-An in-depth technical survey paper of Incremental Transfer Learning [arXiv](https://arxiv.org/abs/2309.17192):
+An in-depth technical/experimental survey paper of Incremental Transfer Learning [arXiv](https://arxiv.org/abs/2309.17192) [Implementation](https://github.com/YixingHuang/ITLsurvey):
 
 [1] Huang, Yixing, et al. "A Survey of Incremental Transfer Learning: Combining Peer-to-Peer Federated Learning and Domain Incremental Learning for Multicenter Collaboration." arXiv preprint arXiv:2309.17192 (2023).
 
