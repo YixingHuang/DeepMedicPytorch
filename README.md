@@ -11,108 +11,13 @@ The manuscript is currently under review of the Green Journal.
 
 ## Dependencies
 
-Python3.6
+Our environment: Python 3.8, Pytorch 1.12.0+cu113
 
-Pytorch0.4.0
 
-`pip install git+https://github.com/pykao/pytorch-v0.4.0@pytorch_0.4.0_poyu`
-
-Install custom pytorch kernels from https://github.com/thuyen/multicrop
-
-`pip install git+https://github.com/thuyen/multicrop.git`
-
-## Required Python libraries
-
-nibabel, nipype, natsort, SimpleITK
-
-`pip install nibabel,nipype,natsort,SimpleITK`
-
-## Required Sofware
-
-FSL (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation)
-
-## Existing Brain Parcellation in Subject Space for BraTS2018 dataset
-
-The Harvard-Oxford subcortical atlases in subject space are stored at `BrainParcellation/HarvardOxford-sub`
-
-## Create the HarvardOxford Subcortical Brain Parcellation to Subject Space for New BraTS Subject
-
-```
-python createBrainParcellation.py -i /DIR_TO_MR_T1.nii.gz -o /DIR_TO_SAVE_THE_BRAIN_PARCELLATION -n SUBJECT_NAME
-```
-
-The output brain parcellation will be named as SUBJECT_NAME_HarvardOxford-sub.nii.gz
-
-## Using Brain Parcellation on DeepMedic and 3D U-Net
-
-For using the brain parcellation on DeepMedic and 3D U-Net, please change the paths in `data/parcellation.py` accordingly
-
-## How to run
-
-### Change:
-
-```
-experiments/settings.yaml
-```
-
-to point to data directories. These are general settings, applied to all
-experiments. Additional experiment-specific configuration will overwrite
-these.
-
-### Split data to 5 fold train/valid splits:
-
-```
-python split.py
-```
-
-### Preprocess data (look at the script for more details):
-
-```
-python prep.py
-```
-
-### Prepare parcellation data:
-
-For using the brain parcellation for DeepMedic and 3D U-Net, please change the paths in `data/parcellation.py` accordingly
-
-```
-python data/parcellation.py
-```
-
-### For standard DeepMedic, run:
-```
-python train.py --gpu 0 --cfg deepmedic_ce
-```
-
-### For DeepMedic with 12-by-12-by-12 output mask, run: 
-```
-python train_12.py --gpu 0 --cfg deepmedic_ce_28x20x12
-```
-
-### For DeepMedic with 6-by-6-by-6 output mask, run: 
-```
-python train_6.py --gpu 0 --cfg deepmedic_ce_22X18X6
-```
-
-### For 3D U-Net run:
-```
-python train_unet.py --gpu 0 --cfg unet_dice2
-```
-
-### Prediction
-
-To make predictions, run `predict.py`, `predict_6.py`, `predict_12.py` or `predict_unet.py` with similar arguments
-
-### Submission
-
-To make submissions, look at `make_submission.py`
-
-### Memory Issue (Data Compression)
-
-If you do not have enough memory to save the output probability maps, you are able to compress these maps to uint16 format by `compress_data.py`
-
-To make submissions with compressed probability maps, please refer to `ensemble_methods.py`
+The Pytorch DeepMedic requires a multicrop library for segment sampling to overcome the class imbalance problem. The original implementation of multicrop from [thuyen](https://github.com/thuyen/multicrop) is outdated. Please find the latest version in my [repository](https://github.com/YixingHuang/multicrop), which should be compatible with latest Pytorch versions.
 
 
 
-Special thanks to [Thuyen Ngo](https://github.com/thuyen).
+
+
+Special thanks to [pykao](https://github.com/pykao/BraTS2018-tumor-segmentation) for the original Pytorch DeepMedic implementation. My implementation was built based on it.
