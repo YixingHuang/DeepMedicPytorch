@@ -16,6 +16,8 @@ The manuscript is currently under review of the Green Journal.
 
 This implementation was modified from the [source](https://github.com/pykao/BraTS2018-tumor-segmentation), where we have added our proposed volume-level sensitivity-specificity (VSS) loss, knowledge distillation loss (KDL), naive transfer learning (TL), and learning without forgetting (LWF) training framework. Most instructions from the [source](https://github.com/pykao/BraTS2018-tumor-segmentation) still work here.
 
+The main LWF techniques are adpated in the file of [train_LWF.py](https://github.com/YixingHuang/DeepMedicPytorch/blob/main/train_LWF.py)
+
 ### Training scripts
 
 The overall training and prediction scripts can be found with the names of [runMain_GJ.py](https://github.com/YixingHuang/DeepMedicPytorch/blob/main/runMain_GJ.py) and [runMain_GJ_UKER_Stanford.py](https://github.com/YixingHuang/DeepMedicPytorch/blob/main/runMain_GJ_UKER_Stanford.py). The scripts work for both Windows and Linux environments. But you need to modify the data paths correspondingly.
