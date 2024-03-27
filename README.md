@@ -1,16 +1,12 @@
 # Deepmedic Pytorch Version
 
-# Official implementation for our manuscript "Deep Learning Brain Metastases Autosegmentation: Multicenter Insights on Privacy-Preserving Model Training and Generalizability"
+## Official implementation for our manuscript "Deep Learning Brain Metastases Autosegmentation: Multicenter Insights on Privacy-Preserving Model Training and Generalizability"
 
 The official Tensorflow version of DeepMedic for our prior [Medical Physics paper](https://doi.org/10.1002/mp.15863) for brain metastases autosegmentation is publicly available [here](https://github.com/YixingHuang/DeepMedicPlus)
 
 ## Citation
 
-The system was employed for our research presented in [1,2], where the we integrate multiple DeepMedics and 3D U-Nets in order to get a robust tumor segmentation mask. We also utilize the brain parcellation masks for the purpose of bringing the location information to DeepMedic and 3D U-Net. If the use of the software or the idea of the paper positively influences your endeavours, please cite [1,2].
-
-[1] **Po-Yu Kao**, Thuyen Ngo, Angela Zhang, Jefferson Chen, and B. S. Manjunath, "[Brain Tumor Segmentation and Tractographic Feature Extraction from Structural MR Images for Overall Survival Prediction.](https://arxiv.org/abs/1807.07716)"  International MICCAI Brainlesion Workshop. Springer, Cham, 2018.
-
-[2] **Po-Yu Kao**, Shailja Shailja, Jiaxiang Jiang, Angela Zhang, Amil Khan, Jefferson W. Chen, and B. S. Manjunath, "[Improving Patch-Based Convolutional Neural Networks for MRI Brain Tumor Segmentation by Leveraging Location Information](https://www.frontiersin.org/articles/10.3389/fnins.2019.01449/full)" Front. Neurosci. 13:1449. doi: 10.3389/fnins.2019.01449 
+The manuscript is currently under review of the Green Journal.
 
 
 ## Dependencies
