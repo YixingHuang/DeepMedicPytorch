@@ -1,6 +1,6 @@
 # Deepmedic Pytorch Version
 
-## Official implementation for our manuscript "Deep Learning Brain Metastases Autosegmentation: Multicenter Insights on Privacy-Preserving Model Training and Generalizability"
+## Official implementation for our manuscript "Multicenter privacy-preserving model training for deep learning brain metastases autosegmentation"
 
 ## Prior Tensorflow version:
 
@@ -10,12 +10,12 @@ The official Tensorflow version of DeepMedic for our prior [Medical Physics pape
 
 ## Citation
 
-The manuscript is currently under review of the Green Journal.
+The manuscript is officially published in the [Green Journal](https://www.thegreenjournal.com/article/S0167-8140(24)00689-3/fulltext).
 
 Related work:
-An in-depth technical/experimental survey paper of Incremental Transfer Learning [[arXiv](https://arxiv.org/abs/2309.17192)] [[Implementation](https://github.com/YixingHuang/ITLsurvey)]:
+An in-depth technical/experimental survey paper of Incremental Transfer Learning [[IEEE Access]([https://arxiv.org/abs/2309.17192](https://ieeexplore.ieee.org/abstract/document/10605816/))] [[Implementation](https://github.com/YixingHuang/ITLsurvey)]:
 
-[1] Huang, Yixing, et al. "A Survey of Incremental Transfer Learning: Combining Peer-to-Peer Federated Learning and Domain Incremental Learning for Multicenter Collaboration." arXiv preprint arXiv:2309.17192 (2023).
+[1] Huang, Yixing, et al. "An experimental survey of incremental transfer learning for multicenter collaboration." IEEE Access, 2024.
 
 Prior brain metastases autosegmentation paper: [[paper](https://doi.org/10.1002/mp.15863)] [[Implementation](https://github.com/YixingHuang/DeepMedicPlus)]:
 
