@@ -1,6 +1,6 @@
 # Deepmedic Pytorch Version
 
-## Official implementation for our manuscript "Multicenter privacy-preserving model training for deep learning brain metastases autosegmentation"
+## Official implementation for our manuscript "Multicenter privacy-preserving model training for deep learning brain metastases autosegmentation" [Published paper](https://www.thegreenjournal.com/article/S0167-8140(24)00689-3/fulltext)
 
 ## Prior Tensorflow version:
 
